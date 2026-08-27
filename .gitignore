@@ -1,0 +1,28 @@
+# artefatos de build
+build/
+dist/
+Aplicação autuação 364/
+Aplicação autuação 364.zip
+
+# versão anterior, mantida só como referência local
+Aplicação inicial/
+
+# logo real do cliente — não publicar
+logo.png
+
+# manual em pptx tem capturas de tela reais — a versão em texto está em
+# docs/manual-operador.md, essa sim publicada
+docs/*.pptx
+
+# valores reais de producao (servidor, razao social) — nao publicar
+autuacao/parametros_local.py
+
+# runtime
+ConferenciaAutuacoes.log
+autuacao_rascunho.json
+__pycache__/
+*.pyc
+
+# ambiente
+.venv/
+venv/

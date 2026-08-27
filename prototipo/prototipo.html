@@ -1,0 +1,1743 @@
+<title>Protótipo Conferência de Autuações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* ===================================================================
+   PAGINA (segue o tema de quem abre) — a bancada onde a janela repousa
+   =================================================================== */
+:root{
+  --pg-fundo:#eceef0;
+  --pg-superficie:#ffffff;
+  --pg-linha:#d5d9dd;
+  --pg-tinta:#12171b;
+  --pg-tinta-2:#4a545c;
+  --pg-suave:#6b757d;
+  --pg-sinal:#c98a00;
+  --pg-sinal-tinta:#8a5f00;
+  --pg-sinal-fundo:#fdf3de;
+  --display:"Barlow Condensed","Segoe UI",sans-serif;
+  --ui:"Barlow","Segoe UI",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --pg-fundo:#0d1113;--pg-superficie:#161b1f;--pg-linha:#262e34;
+    --pg-tinta:#e7eaec;--pg-tinta-2:#b0b8be;--pg-suave:#87919a;
+    --pg-sinal:#f2b134;--pg-sinal-tinta:#f2b134;--pg-sinal-fundo:#2b2113;
+  }
+}
+:root[data-theme="dark"]{
+  --pg-fundo:#0d1113;--pg-superficie:#161b1f;--pg-linha:#262e34;
+  --pg-tinta:#e7eaec;--pg-tinta-2:#b0b8be;--pg-suave:#87919a;
+  --pg-sinal:#f2b134;--pg-sinal-tinta:#f2b134;--pg-sinal-fundo:#2b2113;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{
+  margin:0;background:var(--pg-fundo);color:var(--pg-tinta);
+  font-family:var(--ui);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;padding:26px 20px 60px;
+}
+.pagina{max-width:1240px;margin:0 auto}
+
+/* ------------------------------------------------------- apresentacao */
+.intro{margin-bottom:22px}
+.faixa-sinal{height:5px;width:104px;margin-bottom:16px;
+  background:repeating-linear-gradient(90deg,var(--pg-sinal) 0 24px,transparent 24px 36px)}
+.intro h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.4vw,42px);
+  line-height:1.03;margin:0 0 8px;text-wrap:balance}
+.intro p{margin:0;max-width:66ch;color:var(--pg-tinta-2);font-size:15.5px}
+.intro .aviso{margin-top:12px;font-size:13px;color:var(--pg-suave);max-width:66ch}
+.intro .aviso b{color:var(--pg-tinta-2);font-weight:600}
+
+/* -------------------------------------------------- barra do prototipo */
+.barra-proto{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  background:var(--pg-superficie);border:1px solid var(--pg-linha);
+  border-radius:8px;padding:8px 10px;margin-bottom:14px;
+}
+.barra-proto .rot{font-family:var(--display);font-size:11px;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--pg-suave);margin-right:6px}
+.chip-tela{
+  display:inline-flex;align-items:center;gap:7px;background:transparent;
+  border:1px solid var(--pg-linha);color:var(--pg-tinta-2);font-family:var(--ui);
+  font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:99px;cursor:pointer;
+  transition:.12s;
+}
+.chip-tela i{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--pg-suave)}
+.chip-tela:hover{border-color:var(--pg-sinal);color:var(--pg-tinta)}
+.chip-tela[aria-pressed="true"]{background:var(--pg-sinal-fundo);
+  border-color:var(--pg-sinal);color:var(--pg-sinal-tinta);font-weight:600}
+.chip-tela[aria-pressed="true"] i{color:var(--pg-sinal-tinta)}
+.barra-proto .separa{flex:1}
+.btn-tema{background:transparent;border:1px solid var(--pg-linha);color:var(--pg-tinta-2);
+  font-family:var(--ui);font-size:12px;padding:5px 11px;border-radius:99px;cursor:pointer}
+.btn-tema:hover{border-color:var(--pg-sinal)}
+
+/* ===================================================================
+   A JANELA DO APLICATIVO — tokens proprios, tema independente da pagina
+   =================================================================== */
+.app{
+  border-radius:10px;overflow:hidden;border:1px solid var(--a-moldura);
+  box-shadow:0 2px 6px rgba(0,0,0,.10),0 26px 60px -30px rgba(0,0,0,.55);
+  background:var(--a-fundo);color:var(--a-tinta);font-size:13px;line-height:1.42;
+  display:flex;flex-direction:column;height:906px;min-height:906px;
+}
+.app[data-tema="claro"]{
+  --a-fundo:#eef1f4;--a-folha:#ffffff;--a-faixa:#f5f7f9;--a-moldura:#c2cad3;
+  --a-linha:#dbe1e8;--a-linha-forte:#bcc5cf;
+  --a-tinta:#101519;--a-tinta-2:#39434d;--a-suave:#6c7783;--a-valor:#0e4a9c;
+  --a-sinal:#b47a00;--a-sinal-fundo:#fdf3de;--a-sinal-borda:#e8c477;
+  --a-ok:#177a3c;--a-ok-fundo:#e6f3ea;--a-ok-borda:#9ccfad;
+  --a-no:#ad2c2a;--a-no-fundo:#fbeae9;--a-no-borda:#e3a9a6;
+  --a-azul:#1c5cb8;--a-azul-2:#2a70d6;
+  --a-titulo:linear-gradient(#fbfcfd,#e9edf1);
+}
+.app[data-tema="escuro"]{
+  --a-fundo:#12171b;--a-folha:#1a2126;--a-faixa:#161d22;--a-moldura:#000000;
+  --a-linha:#2a333b;--a-linha-forte:#3c4854;
+  --a-tinta:#e8ebee;--a-tinta-2:#b6bfc7;--a-suave:#87929c;--a-valor:#6fb0ff;
+  --a-sinal:#f2b134;--a-sinal-fundo:#2c2214;--a-sinal-borda:#6b5220;
+  --a-ok:#55c886;--a-ok-fundo:#14271b;--a-ok-borda:#2c5c3c;
+  --a-no:#ee7b73;--a-no-fundo:#2b1716;--a-no-borda:#63302d;
+  --a-azul:#3f83e0;--a-azul-2:#5093ee;
+  --a-titulo:linear-gradient(#232b32,#1a2127);
+}
+
+/* --------------------------------------------------- barra de titulo */
+.titulo-janela{
+  flex:0 0 34px;display:flex;align-items:center;gap:10px;padding:0 10px;
+  background:var(--a-titulo);border-bottom:1px solid var(--a-linha-forte);user-select:none;
+}
+.semaforo{display:flex;gap:6px}
+.semaforo i{width:10px;height:10px;border-radius:50%;display:block}
+.semaforo i:nth-child(1){background:#e0685f}
+.semaforo i:nth-child(2){background:#e2b04a}
+.semaforo i:nth-child(3){background:#57bb6a}
+.titulo-janela .nome{font-family:var(--display);font-weight:600;font-size:14px;
+  letter-spacing:.02em;color:var(--a-tinta-2)}
+.titulo-janela .versao{font-family:var(--mono);font-size:10px;color:var(--a-suave)}
+.titulo-janela .dir{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn-janela{background:none;border:none;color:var(--a-suave);font-size:13px;
+  cursor:pointer;padding:2px 6px;border-radius:3px;line-height:1}
+.btn-janela:hover{background:rgba(128,128,128,.18);color:var(--a-tinta)}
+
+.chip-modulo{display:inline-flex;align-items:center;gap:8px;background:var(--a-folha);
+  border:1px solid var(--a-linha-forte);border-radius:99px;padding:2px 11px 2px 5px;
+  font-size:11.5px;font-weight:600;color:var(--a-tinta-2);white-space:nowrap}
+.marca-pista{width:20px;height:14px;border-radius:3px;background:#333a40;
+  position:relative;flex:0 0 20px}
+.marca-pista::before,.marca-pista::after{content:"";position:absolute;left:2px;right:2px;height:1.5px}
+.mp-contramao::before{top:5px;background:#f2b134}
+.mp-contramao::after{top:8.5px;background:#f2b134}
+.mp-acostamento::before{top:6px;background:#eef1f3}
+.mp-acostamento::after{top:9.5px;bottom:2px;
+  background:repeating-linear-gradient(115deg,#eef1f3 0 1px,transparent 1px 5px);opacity:.5}
+
+/* ------------------------------------------------------------ telas */
+.palco-app{flex:1;min-height:0;position:relative;overflow:hidden}
+.tela{position:absolute;inset:0;display:none;flex-direction:column;min-height:0}
+.tela.on{display:flex}
+.centraliza{align-items:center;justify-content:center;padding:24px}
+
+/* ------------------------------------------------------ T1 modulos */
+.hub{width:100%;max-width:700px;text-align:center}
+.hub h2{font-family:var(--display);font-weight:700;font-size:26px;margin:0 0 6px}
+.hub .sub{color:var(--a-suave);font-size:13px;margin:0 0 24px}
+.hub-cartoes{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left}
+.cartao-modulo{background:var(--a-folha);border:1px solid var(--a-linha-forte);
+  border-radius:8px;overflow:hidden;cursor:pointer;transition:.14s;text-align:left;
+  padding:0;font-family:inherit;color:inherit;display:block;width:100%}
+.cartao-modulo:hover{border-color:var(--a-azul);transform:translateY(-2px);
+  box-shadow:0 10px 24px -14px rgba(0,0,0,.5)}
+.cm-pista{height:56px;background:#333a40;position:relative}
+.cm-pista::before,.cm-pista::after{content:"";position:absolute;left:0;right:0}
+.cm-contramao::before{top:25px;height:2px;background:#f2b134}
+.cm-contramao::after{top:31px;height:2px;background:#f2b134}
+.cm-acostamento::before{top:27px;height:2px;background:#eef1f3}
+.cm-acostamento::after{top:33px;bottom:0;
+  background:repeating-linear-gradient(115deg,#eef1f3 0 1px,transparent 1px 11px);opacity:.45}
+.cm-corpo{padding:14px 16px 16px}
+.cm-corpo h3{font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 4px}
+.cm-corpo p{margin:0;font-size:12.5px;color:var(--a-suave);line-height:1.5}
+.cm-corpo .entrar{margin-top:12px;font-size:12px;font-weight:600;color:var(--a-azul)}
+.retomar{margin-top:20px;display:flex;align-items:center;gap:12px;text-align:left;
+  background:var(--a-sinal-fundo);border:1px solid var(--a-sinal-borda);border-radius:6px;
+  padding:11px 14px;font-size:12.5px;color:var(--a-tinta-2)}
+.retomar b{color:var(--a-tinta);font-weight:600}
+.retomar .separa{flex:1}
+
+/* -------------------------------------------------------- T2 carga */
+.carga{width:100%;max-width:560px;text-align:center}
+.carga h2{font-family:var(--display);font-weight:700;font-size:24px;margin:0 0 6px}
+.carga .sub{color:var(--a-suave);font-size:13px;margin:0 0 20px;line-height:1.55}
+.dropzone{display:flex;flex-direction:column;align-items:center;gap:7px;
+  border:2px dashed var(--a-linha-forte);border-radius:10px;padding:34px 20px;
+  background:var(--a-folha);cursor:pointer;transition:.14s;width:100%;
+  font-family:inherit;color:inherit}
+.dropzone:hover{border-color:var(--a-azul);background:var(--a-faixa)}
+.dz-icone{width:34px;height:34px;stroke:var(--a-azul);fill:none;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.dz-titulo{font-family:var(--display);font-weight:600;font-size:17px}
+.dz-sub{font-size:12px;color:var(--a-suave)}
+.resumo-carga{margin-top:16px;background:var(--a-folha);border:1px solid var(--a-linha);
+  border-radius:8px;padding:14px 16px;text-align:left}
+.resumo-carga h4{font-family:var(--display);font-size:12px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--a-suave);margin:0 0 10px}
+.rc-grade{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 14px}
+.rc-item{display:flex;flex-direction:column;gap:1px}
+.rc-item em{font-style:normal;font-size:10.5px;color:var(--a-suave);
+  text-transform:uppercase;letter-spacing:.06em}
+.rc-item b{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* -------------------------------------------------- T3 conferencia */
+.faixa-topo{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:7px 12px;
+  background:var(--a-faixa);border-bottom:1px solid var(--a-linha)}
+.arquivo{font-size:11.5px;color:var(--a-suave);font-family:var(--mono);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:300px}
+.contadores{display:flex;gap:6px;margin-left:auto}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:99px;
+  background:var(--a-folha);border:1px solid var(--a-linha-forte);font-size:11px;
+  color:var(--a-suave);white-space:nowrap}
+.pill b{color:var(--a-tinta);font-weight:600;font-variant-numeric:tabular-nums}
+.pill-ok{border-color:var(--a-ok-borda);background:var(--a-ok-fundo)}
+.pill-ok b{color:var(--a-ok)}
+.pill-no{border-color:var(--a-no-borda);background:var(--a-no-fundo)}
+.pill-no b{color:var(--a-no)}
+
+.trilha-env{flex:0 0 auto;padding:8px 12px 0}
+.trilha{display:flex;gap:2px;height:9px}
+.trilha button{flex:1;height:100%;border:none;border-radius:2px;cursor:pointer;padding:0;
+  background:var(--a-linha-forte);transition:.12s}
+.trilha button:hover{opacity:.75}
+.trilha button.t-ok{background:var(--a-ok)}
+.trilha button.t-no{background:var(--a-no)}
+.trilha button.t-sem{background:var(--a-sinal)}
+.trilha button.t-atual{outline:2px solid var(--a-azul);outline-offset:1px}
+.trilha-leg{display:flex;gap:14px;font-size:10.5px;color:var(--a-suave);margin-top:5px}
+.trilha-leg span{display:inline-flex;align-items:center;gap:5px}
+.trilha-leg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+.folha{flex:1;min-height:0;display:flex;flex-direction:column;margin:9px 12px;
+  background:var(--a-folha);border:1px solid var(--a-linha-forte);border-radius:6px;
+  overflow:hidden}
+
+/* bloco unico: dados + informacoes complementares */
+.bloco-dados{padding:9px 12px;border-bottom:1px solid var(--a-linha);background:var(--a-faixa)}
+.grade-dados{display:grid;grid-template-columns:repeat(6,1fr);gap:5px 14px}
+.gd{display:flex;flex-direction:column;min-width:0}
+.gd em{font-style:normal;font-size:10px;color:var(--a-suave);letter-spacing:.04em;
+  text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd b{font-size:12.5px;font-weight:500;color:var(--a-valor);font-variant-numeric:tabular-nums;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd.destaque b{font-weight:700}
+.gd.destaque em{color:var(--a-sinal)}
+.gd.mono b{font-family:var(--mono);font-size:11px}
+.gd.fraco b{color:var(--a-tinta-2);font-weight:400}
+.selos{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
+.selo{font-size:10.5px;padding:2px 8px;border-radius:99px;border:1px solid var(--a-linha-forte);
+  color:var(--a-suave);background:var(--a-folha);white-space:nowrap}
+.selo-alerta{border-color:var(--a-sinal-borda);background:var(--a-sinal-fundo);
+  color:var(--a-sinal);font-weight:600}
+.selo-ok{border-color:var(--a-ok-borda);background:var(--a-ok-fundo);color:var(--a-ok);font-weight:600}
+.selo-no{border-color:var(--a-no-borda);background:var(--a-no-fundo);color:var(--a-no);font-weight:600}
+
+/* corpo: 2/3 trabalho + 1/3 previa */
+.corpo{flex:1;min-height:0;display:grid;grid-template-columns:2fr 1fr}
+.area-foto{display:flex;flex-direction:column;min-width:0;min-height:0;
+  border-right:1px solid var(--a-linha-forte)}
+
+/* navegacao centralizada acima das fotos */
+.nav-central{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:7px 12px;border-bottom:1px solid var(--a-linha);background:var(--a-faixa)}
+.btn-nav{background:var(--a-folha);border:1px solid var(--a-linha-forte);
+  color:var(--a-tinta-2);padding:5px 12px;font-size:11.5px;border-radius:4px;
+  cursor:pointer;font-family:inherit}
+.btn-nav:hover:not(:disabled){border-color:var(--a-azul);color:var(--a-tinta)}
+.btn-nav:disabled{opacity:.4;cursor:not-allowed}
+.contador{font-size:12.5px;color:var(--a-tinta-2);font-variant-numeric:tabular-nums;
+  white-space:nowrap;padding:0 6px;font-weight:600;min-width:64px;text-align:center}
+
+.visor{flex:1;min-height:0;display:grid;grid-template-columns:46px minmax(0,1fr)}
+.abas{display:flex;flex-direction:column;gap:3px;padding:8px 5px;background:var(--a-faixa);
+  border-right:1px solid var(--a-linha)}
+.aba{border:1px solid var(--a-linha-forte);background:var(--a-folha);color:var(--a-tinta-2);
+  border-radius:4px;padding:6px 0;cursor:pointer;font-family:var(--ui);font-size:11px;
+  font-weight:600;line-height:1.15;display:flex;flex-direction:column;align-items:center;
+  gap:1px;transition:.1s}
+.aba span{font-size:8.5px;font-weight:500;color:var(--a-suave);letter-spacing:.03em}
+.aba:hover:not(:disabled){border-color:var(--a-azul)}
+.aba.on{background:var(--a-azul);border-color:var(--a-azul);color:#fff}
+.aba.on span{color:rgba(255,255,255,.8)}
+.aba:disabled{opacity:.3;cursor:not-allowed}
+.palco{position:relative;background:#0c1013;display:flex;align-items:center;
+  justify-content:center;overflow:hidden;min-height:0;padding:6px}
+.palco svg{max-width:100%;max-height:100%;aspect-ratio:4/3;display:block;cursor:zoom-in}
+.palco-vazio{color:#77828c;font-size:12.5px;text-align:center;padding:20px;line-height:1.6}
+.palco-vazio b{display:block;color:#c3ccd4;font-family:var(--display);font-size:16px;
+  font-weight:600;margin-bottom:4px}
+.seta-foto{
+  position:absolute;top:50%;transform:translateY(-50%);width:34px;height:56px;
+  border-radius:6px;background:rgba(12,16,19,.60);border:1px solid rgba(255,255,255,.18);
+  color:#e6eaee;font-size:21px;line-height:1;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;font-family:inherit;transition:.12s;z-index:2;
+}
+.seta-foto:hover{background:rgba(12,16,19,.88);border-color:rgba(255,255,255,.42)}
+.seta-ant{left:9px}
+.seta-prox{right:9px}
+.pos-foto{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--a-folha);border:1px solid var(--a-linha-forte);color:var(--a-tinta-2);
+  border-radius:99px;padding:2px 10px;font-size:10.5px;font-family:var(--mono);
+  white-space:nowrap;
+}
+.marca-sel{position:absolute;top:11px;right:11px;display:inline-flex;align-items:center;
+  gap:6px;background:rgba(12,16,19,.82);border:1px solid rgba(255,255,255,.16);
+  color:#e6eaee;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600}
+.marca-sel.ativa{background:rgba(23,122,60,.92);border-color:#2f9a58;color:#fff}
+
+.controles{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:6px 12px;
+  border-top:1px solid var(--a-linha);background:var(--a-faixa);font-size:11px;
+  color:var(--a-suave);flex-wrap:wrap}
+.controles label{display:inline-flex;align-items:center;gap:6px}
+.controles input[type=range]{width:80px;accent-color:var(--a-azul)}
+.btn-mini{background:var(--a-folha);border:1px solid var(--a-linha-forte);
+  color:var(--a-tinta-2);padding:3px 9px;font-size:10.5px;border-radius:4px;
+  cursor:pointer;font-family:inherit}
+.btn-mini:hover{border-color:var(--a-azul);color:var(--a-tinta)}
+
+/* tira de selecao */
+.tira{flex:0 0 auto;border-top:1px solid var(--a-linha-forte);background:var(--a-faixa);
+  padding:7px 12px 9px}
+.tira-cab{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.tira-cab h4{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--a-suave);margin:0}
+.tira-cab .conta{font-size:11px;font-weight:600;color:var(--a-tinta-2);
+  font-variant-numeric:tabular-nums}
+.tira-cab .conta.alerta{color:var(--a-sinal)}
+.tira-cab .separa{flex:1}
+.tira-lista{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px}
+.mini-foto{flex:0 0 auto;width:76px;border:2px solid var(--a-linha-forte);border-radius:5px;
+  overflow:hidden;cursor:pointer;background:#0c1013;padding:0;position:relative;
+  transition:.12s;font-family:inherit}
+.mini-foto svg{width:100%;aspect-ratio:4/3;display:block}
+.mini-foto .rot{display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:3px 5px;background:var(--a-folha);font-size:10px;color:var(--a-tinta-2);
+  font-family:var(--mono)}
+.mini-foto:hover{border-color:var(--a-azul)}
+.mini-foto.sel{border-color:var(--a-ok)}
+.mini-foto.sel .rot{background:var(--a-ok-fundo);color:var(--a-ok);font-weight:600}
+.mini-foto.atual{outline:2px solid var(--a-azul);outline-offset:1px}
+.tique{position:absolute;top:4px;left:4px;width:17px;height:17px;border-radius:4px;
+  border:1.5px solid rgba(255,255,255,.55);background:rgba(12,16,19,.6);display:flex;
+  align-items:center;justify-content:center;font-size:11px;color:transparent;
+  line-height:1;font-weight:700}
+.mini-foto.sel .tique{background:var(--a-ok);border-color:var(--a-ok);color:#fff}
+.ordem{position:absolute;top:4px;right:4px;height:17px;border-radius:4px;
+  background:rgba(12,16,19,.75);color:#e6eaee;font-size:9.5px;font-weight:700;
+  display:none;align-items:center;justify-content:center;padding:0 5px;
+  font-family:var(--mono);white-space:nowrap}
+.mini-foto.sel .ordem{display:flex}
+
+/* ---------------------------------------- previa embutida (1/3 direita) */
+.previa-lado{display:flex;flex-direction:column;min-height:0;background:var(--a-faixa)}
+.previa-cab{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;
+  border-bottom:1px solid var(--a-linha);background:var(--a-folha)}
+.previa-cab h4{font-family:var(--display);font-size:11px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--a-suave);margin:0}
+.previa-cab .separa{flex:1}
+.previa-cab .tag-pag{font-size:10px;color:var(--a-suave);font-family:var(--mono)}
+.previa-rolagem{flex:1;min-height:0;overflow-y:auto;padding:10px 12px 14px;
+  display:flex;flex-direction:column;gap:10px}
+
+.pv-folha{background:#fff;color:#111;border:1px solid #b9c1c9;border-radius:2px;
+  padding:11px;font-family:var(--ui);position:relative}
+.pv-selo{position:absolute;top:-8px;right:9px;background:#b47a00;color:#fff;
+  font-family:var(--display);font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding:1px 7px;border-radius:99px}
+.pv-cab{border:1px solid #333;display:flex;align-items:center;gap:8px;
+  padding:6px 8px;margin-bottom:7px}
+.pv-logo{width:44px;height:16px;border:1px dashed #999;border-radius:2px;font-size:7px;
+  color:#888;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pv-titulo{flex:1;text-align:center;font-family:var(--display);font-weight:700;
+  font-size:9.5px;letter-spacing:.03em;color:#111;line-height:1.15}
+.pv-origem{font-size:6.5px;color:#555;margin-bottom:7px}
+.pv-rot{font-family:var(--display);font-size:8px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:#333;margin:0 0 4px}
+.pv-dados{display:grid;grid-template-columns:repeat(3,1fr);gap:3px 8px;margin-bottom:8px}
+.pv-campo{display:flex;flex-direction:column;gap:0;min-width:0}
+.pv-campo em{font-style:normal;color:#777;font-size:6px;text-transform:uppercase;
+  letter-spacing:.04em}
+.pv-campo b{font-weight:600;color:#111;font-size:7.5px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.pv-fotos{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.pv-cel{display:flex;flex-direction:column;gap:1px;min-width:0}
+.pv-foto{aspect-ratio:4/3;background:#0c1013;border:1px solid #444;border-radius:1px;
+  overflow:hidden}
+.pv-foto svg{width:100%;height:100%;display:block}
+.pv-cel span{font-size:5.5px;color:#555;font-family:var(--mono);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.pv-decl{margin-top:8px;padding-top:5px;border-top:1px solid #ddd;font-size:6px;
+  color:#555;line-height:1.5}
+.pv-decl b{color:#111;font-weight:700}
+.pv-vazio{background:#f4f4f4;border:1px dashed #bbb;border-radius:2px;padding:18px 10px;
+  text-align:center;font-size:8px;color:#888;line-height:1.6}
+.previa-nota{font-size:11px;color:var(--a-suave);line-height:1.5;padding:0 1px}
+.previa-nota b{color:var(--a-tinta);font-weight:600}
+
+/* barra de decisao */
+.acoes{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:9px 12px;
+  border-top:1px solid var(--a-linha-forte);background:var(--a-faixa)}
+.atalhos{font-size:10.5px;color:var(--a-suave);line-height:1.7}
+kbd{font-family:var(--mono);font-size:9.5px;font-weight:500;padding:1px 4px;
+  border-radius:3px;background:var(--a-folha);border:1px solid var(--a-linha-forte);
+  color:var(--a-tinta-2)}
+.acoes-dir{margin-left:auto;display:flex;gap:9px;align-items:center}
+.aviso-bloqueio{font-size:11px;color:var(--a-sinal);font-weight:600;max-width:230px;
+  text-align:right;line-height:1.35}
+.btn-dec{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;
+  font-weight:700;border-radius:5px;border:1px solid transparent;cursor:pointer;
+  font-family:inherit;color:#fff}
+.btn-dec kbd{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35);color:#fff}
+.btn-no{background:#c02f2c;border-color:#9d2523}
+.btn-no:hover{filter:brightness(1.1)}
+.btn-ok{background:#1a8043;border-color:#146433}
+.btn-ok:hover:not(:disabled){filter:brightness(1.1)}
+.btn-ok:disabled{opacity:.4;cursor:not-allowed}
+
+/* ------------------------------------------------------- T4 resumo */
+.resumo{width:100%;max-width:680px}
+.resumo h2{font-family:var(--display);font-weight:700;font-size:24px;margin:0 0 4px}
+.resumo .sub{color:var(--a-suave);font-size:12.5px;margin:0 0 18px}
+.numeros{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.num{background:var(--a-folha);border:1px solid var(--a-linha-forte);border-radius:7px;
+  padding:12px 13px;display:flex;flex-direction:column;gap:2px}
+.num b{font-size:27px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;
+  font-family:var(--display)}
+.num span{font-size:11px;color:var(--a-suave);line-height:1.3}
+.num-ok{border-color:var(--a-ok-borda);background:var(--a-ok-fundo)}
+.num-ok b{color:var(--a-ok)}
+.num-no{border-color:var(--a-no-borda);background:var(--a-no-fundo)}
+.num-no b{color:var(--a-no)}
+.num-sem{border-color:var(--a-sinal-borda);background:var(--a-sinal-fundo)}
+.num-sem b{color:var(--a-sinal)}
+.painel{background:var(--a-folha);border:1px solid var(--a-linha);border-radius:7px;
+  padding:13px 15px;margin-bottom:12px}
+.painel h4{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--a-suave);margin:0 0 9px}
+.motivos{display:flex;flex-direction:column;gap:6px}
+.mot{display:flex;align-items:center;gap:9px;font-size:12px}
+.mot .barra{height:7px;border-radius:99px;background:var(--a-no);opacity:.75;flex:0 0 auto}
+.mot .txt{flex:1;color:var(--a-tinta-2)}
+.mot .qtd{font-variant-numeric:tabular-nums;color:var(--a-suave);font-size:11.5px}
+.campo-linha{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.campo-linha label{font-size:11px;color:var(--a-suave)}
+.entrada{border:1px solid var(--a-linha-forte);border-radius:4px;background:var(--a-folha);
+  color:var(--a-tinta);font-family:var(--mono);font-size:11.5px;padding:7px 9px;width:100%}
+.entrada:focus{outline:2px solid var(--a-azul);outline-offset:-1px}
+.resumo-acoes{display:flex;gap:10px;align-items:center}
+.btn-fantasma{background:var(--a-folha);border:1px solid var(--a-linha-forte);
+  color:var(--a-tinta-2);padding:9px 16px;border-radius:5px;cursor:pointer;
+  font-family:inherit;font-size:12.5px}
+.btn-fantasma:hover{border-color:var(--a-azul);color:var(--a-tinta)}
+.btn-primario{background:linear-gradient(var(--a-azul-2),var(--a-azul));
+  border:1px solid var(--a-azul);color:#fff;font-weight:700;padding:10px 20px;
+  border-radius:5px;cursor:pointer;font-family:inherit;font-size:13px}
+.btn-primario:hover:not(:disabled){filter:brightness(1.08)}
+.btn-primario:disabled{opacity:.45;cursor:not-allowed}
+.alerta{border-radius:5px;padding:10px 13px;font-size:12px;margin-bottom:12px;line-height:1.5}
+.alerta-ok{background:var(--a-ok-fundo);border:1px solid var(--a-ok-borda);color:var(--a-ok)}
+.alerta-aviso{background:var(--a-sinal-fundo);border:1px solid var(--a-sinal-borda);color:var(--a-sinal)}
+.alerta b{font-weight:700}
+
+/* ------------------------------------------------------ sobreposicoes */
+.cortina{position:absolute;inset:0;background:rgba(6,9,11,.62);display:none;
+  align-items:center;justify-content:center;padding:22px;z-index:20}
+.cortina.on{display:flex}
+.caixa{background:var(--a-folha);border:1px solid var(--a-linha-forte);border-radius:9px;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.7);width:100%;max-height:100%;overflow-y:auto;
+  padding:18px 20px}
+.caixa h3{font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 3px}
+.caixa .sub{font-size:12px;color:var(--a-suave);margin:0 0 14px}
+.caixa-acoes{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}
+.c-media{max-width:440px}
+
+.opcoes{display:flex;flex-direction:column;gap:6px}
+.opcao{display:flex;align-items:center;gap:9px;border:1px solid var(--a-linha-forte);
+  border-radius:5px;padding:9px 11px;cursor:pointer;font-size:12.5px;
+  background:var(--a-faixa);font-family:inherit;color:var(--a-tinta-2);text-align:left;
+  width:100%}
+.opcao:hover{border-color:var(--a-no);color:var(--a-tinta)}
+.opcao.on{border-color:var(--a-no);background:var(--a-no-fundo);color:var(--a-no);font-weight:600}
+.opcao i{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--a-suave)}
+.opcao .sugerido{margin-left:auto;font-size:10px;font-weight:600;letter-spacing:.03em;
+  padding:1px 8px;border-radius:99px;background:var(--a-sinal-fundo);
+  border:1px solid var(--a-sinal-borda);color:var(--a-sinal)}
+.opcao.sugerida{border-color:var(--a-sinal-borda);background:var(--a-sinal-fundo)}
+.campo-outros{margin-top:10px}
+.campo-outros label{display:block;font-size:11px;color:var(--a-suave);margin-bottom:4px}
+.campo-outros textarea{width:100%;border:1px solid var(--a-linha-forte);border-radius:4px;
+  background:var(--a-faixa);color:var(--a-tinta);font-family:inherit;font-size:12px;
+  padding:7px 9px;resize:vertical;min-height:56px}
+.campo-outros textarea:focus{outline:2px solid var(--a-no);outline-offset:-1px}
+
+.lente{background:#07090b;border-radius:8px;overflow:hidden;width:100%;max-width:720px;
+  border:1px solid #2a333b}
+.lente-palco{background:#000;display:flex;align-items:center;justify-content:center}
+.lente-palco svg{width:100%;aspect-ratio:4/3;display:block}
+.lente-pe{display:flex;align-items:center;gap:12px;padding:8px 12px;color:#9aa5ad;
+  font-size:11.5px;background:#0d1114;border-top:1px solid #222a31}
+.lente-pe .separa{flex:1}
+
+/* ---------------------------------------------------------- rodape */
+.notas{margin-top:22px;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.nota-card{background:var(--pg-superficie);border:1px solid var(--pg-linha);
+  border-radius:8px;padding:14px 16px}
+.nota-card h4{font-family:var(--display);font-size:15px;font-weight:600;margin:0 0 5px}
+.nota-card p{margin:0;font-size:13px;color:var(--pg-suave);line-height:1.55}
+.nota-card code{font-family:var(--mono);font-size:11.5px;background:var(--pg-fundo);
+  padding:1px 4px;border-radius:3px}
+
+:focus-visible{outline:2px solid var(--pg-sinal);outline-offset:2px}
+.app :focus-visible{outline:2px solid var(--a-azul);outline-offset:1px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:900px){
+  .app{height:auto;min-height:0}
+  .palco-app{overflow:visible}
+  .tela.on{position:static;inset:auto}
+  .palco{min-height:230px}
+  .folha{min-height:0}
+  .corpo{grid-template-columns:1fr}
+  .previa-lado{border-top:1px solid var(--a-linha-forte)}
+  .previa-rolagem{max-height:none}
+  .grade-dados{grid-template-columns:repeat(3,1fr)}
+  .numeros,.rc-grade{grid-template-columns:1fr 1fr}
+  .hub-cartoes{grid-template-columns:1fr}
+}
+</style>
+
+<div class="pagina">
+
+<div class="intro">
+  <div class="faixa-sinal"></div>
+  <h1>Protótipo da Conferência de Autuações</h1>
+  <p>As telas da versão 2.1, navegáveis. Escolha um módulo, carregue o relatório, monte a
+     evidência marcando as fotos e veja o laudo se montar ao lado, com a quebra de página
+     e tudo. Autue com <b>Enter</b>, descarte com <b>Backspace</b>.</p>
+  <p class="aviso"><b>As imagens são desenhos esquemáticos</b>, não capturas reais: cada
+     ângulo representa a geometria do que ele precisa provar — a frontal identifica a
+     placa, a panorâmica mostra a faixa. Na aplicação, entram as fotos do servidor.</p>
+</div>
+
+<div class="barra-proto" role="toolbar" aria-label="Navegação do protótipo">
+  <span class="rot">Telas</span>
+  <button class="chip-tela" data-ir="modulos"><i>T1</i>Módulos</button>
+  <button class="chip-tela" data-ir="carga"><i>T2</i>Carga</button>
+  <button class="chip-tela" data-ir="conferencia"><i>T3</i>Conferência</button>
+  <button class="chip-tela" data-ir="resumo"><i>T4</i>Resumo</button>
+  <span class="separa"></span>
+  <button class="btn-tema" id="btn-tema-app">Tema do app: claro</button>
+</div>
+
+<!-- ══════════════════════════ A JANELA ══════════════════════════ -->
+<div class="app" id="app" data-tema="claro">
+
+  <div class="titulo-janela">
+    <div class="semaforo"><i></i><i></i><i></i></div>
+    <span class="nome">Conferência de Autuações</span>
+    <span class="versao">2.1</span>
+    <span class="chip-modulo" id="chip-modulo" hidden>
+      <span class="marca-pista mp-contramao" id="marca-modulo"></span>
+      <span id="nome-modulo">Contramão</span>
+    </span>
+    <div class="dir">
+      <button class="btn-janela" title="Minimizar">&#8211;</button>
+      <button class="btn-janela" title="Maximizar">&#9633;</button>
+      <button class="btn-janela" title="Fechar">&#10005;</button>
+    </div>
+  </div>
+
+  <div class="palco-app">
+
+    <!-- ─────────────────────────── T1 · MÓDULOS ─────────────────────── -->
+    <section class="tela centraliza" id="tela-modulos">
+      <div class="hub">
+        <h2>O que você vai analisar hoje?</h2>
+        <p class="sub">A escolha vale para a sessão inteira. A conferência é igual nos dois
+           módulos — o que muda é o título do laudo e a pasta da remessa.</p>
+
+        <div class="hub-cartoes">
+          <button class="cartao-modulo" data-modulo="contramao">
+            <div class="cm-pista cm-contramao"></div>
+            <div class="cm-corpo">
+              <h3>Análise de contramão</h3>
+              <p>Veículo no sentido oposto ao da faixa.<br>
+                 Laudo: <em>Comprovação de Trânsito - Contramão</em>.</p>
+              <div class="entrar">Começar &rsaquo;</div>
+            </div>
+          </button>
+          <button class="cartao-modulo" data-modulo="acostamento">
+            <div class="cm-pista cm-acostamento"></div>
+            <div class="cm-corpo">
+              <h3>Análise de acostamento</h3>
+              <p>Veículo fora das faixas de rolamento.<br>
+                 Laudo: <em>Comprovação de Trânsito - Acostamento</em>.</p>
+              <div class="entrar">Começar &rsaquo;</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="retomar">
+          <span class="marca-pista mp-contramao"></span>
+          <div>
+            <b>Sessão interrompida em 25/08, 11:42</b> — Contramão ·
+            TransactionSelectionReport_20260825.xlsx · 6 de 9 decididos
+          </div>
+          <span class="separa"></span>
+          <button class="btn-mini" data-modulo="contramao" data-retomar="1">Retomar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── T2 · CARGA ───────────────────────── -->
+    <section class="tela centraliza" id="tela-carga">
+      <div class="carga">
+        <h2>Carregue o relatório do Backoffice</h2>
+        <p class="sub">Exporte o relatório de transações filtrado e arraste o arquivo
+           aqui. É a única forma de entrada de dados da aplicação.</p>
+
+        <button class="dropzone" id="dropzone">
+          <svg class="dz-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+          <span class="dz-titulo">Arraste o arquivo aqui</span>
+          <span class="dz-sub">ou clique para escolher — .xlsx exportado do Backoffice</span>
+        </button>
+
+        <div class="resumo-carga" id="resumo-carga" hidden>
+          <h4>Relatório lido</h4>
+          <div class="rc-grade">
+            <div class="rc-item"><em>Trânsitos</em><b>9</b></div>
+            <div class="rc-item"><em>Praça</em><b>P2</b></div>
+            <div class="rc-item"><em>Período</em><b>25/08/2026</b></div>
+            <div class="rc-item"><em>Pistas</em><b>1</b></div>
+          </div>
+          <div class="caixa-acoes">
+            <button class="btn-fantasma" id="trocar-arquivo">Trocar arquivo</button>
+            <button class="btn-primario" id="iniciar-conferencia">Iniciar conferência</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────────────────── T3 · CONFERÊNCIA ──────────────────────── -->
+    <section class="tela" id="tela-conferencia">
+
+      <div class="faixa-topo">
+        <span class="arquivo">TransactionSelectionReport_20260825.xlsx</span>
+        <div class="contadores">
+          <span class="pill pill-ok"><b id="c-ok">0</b> autuados</span>
+          <span class="pill pill-no"><b id="c-no">0</b> descartados</span>
+          <span class="pill"><b id="c-pend">9</b> pendentes</span>
+        </div>
+        <button class="btn-mini" id="ir-resumo">Finalizar sessão &rsaquo;</button>
+      </div>
+
+      <div class="trilha-env">
+        <div class="trilha" id="trilha" role="group" aria-label="Progresso da sessão"></div>
+        <div class="trilha-leg">
+          <span><i style="background:var(--a-ok)"></i> autuado</span>
+          <span><i style="background:var(--a-no)"></i> descartado</span>
+          <span><i style="background:var(--a-sinal)"></i> sem evidência</span>
+          <span><i style="background:var(--a-linha-forte)"></i> pendente</span>
+        </div>
+      </div>
+
+      <div class="folha">
+        <div class="bloco-dados">
+          <div class="grade-dados" id="grade-dados"></div>
+          <div class="selos" id="selos"></div>
+        </div>
+
+        <div class="corpo">
+          <div class="area-foto">
+            <div class="nav-central">
+              <button class="btn-nav" id="ant">&lsaquo; Trânsito anterior</button>
+              <span class="contador" id="contador">1 / 9</span>
+              <button class="btn-nav" id="prox">Próximo trânsito &rsaquo;</button>
+            </div>
+
+            <div class="visor">
+              <div class="abas" id="abas"></div>
+              <div class="palco" id="palco">
+                <button class="seta-foto seta-ant" id="foto-ant"
+                        title="Foto anterior (←)" aria-label="Foto anterior">&lsaquo;</button>
+                <button class="seta-foto seta-prox" id="foto-prox"
+                        title="Próxima foto (→)" aria-label="Próxima foto">&rsaquo;</button>
+                <span class="marca-sel" id="marca-sel">no laudo</span>
+              </div>
+            </div>
+
+            <div class="controles">
+              <span class="pos-foto" id="pos-foto"></span>
+              <label>Brilho <input type="range" id="brilho" min="60" max="180" value="100"></label>
+              <label>Contraste <input type="range" id="contraste" min="60" max="200" value="100"></label>
+              <button class="btn-mini" id="reset-img">Restaurar</button>
+              <button class="btn-mini" id="ampliar">Ampliar <kbd>F</kbd></button>
+            </div>
+
+            <div class="tira">
+              <div class="tira-cab">
+                <h4>Fotos do laudo</h4>
+                <span class="conta" id="conta-sel">0 de 8</span>
+                <span class="separa"></span>
+                <button class="btn-mini" id="sel-padrao">Seleção sugerida</button>
+                <button class="btn-mini" id="sel-limpar">Limpar</button>
+              </div>
+              <div class="tira-lista" id="tira-lista"></div>
+            </div>
+          </div>
+
+          <aside class="previa-lado">
+            <div class="previa-cab">
+              <h4>Prévia do laudo</h4>
+              <span class="separa"></span>
+              <span class="tag-pag" id="tag-pag"></span>
+            </div>
+            <div class="previa-rolagem" id="previa-rolagem"></div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <div class="atalhos">
+          <kbd>Enter</kbd> autuar · <kbd>Backspace</kbd> descartar ·
+          <kbd>Espaço</kbd> marcar foto · <kbd>&larr;</kbd><kbd>&rarr;</kbd> foto
+          (ou as setas sobre a imagem) ·
+          <kbd>&uarr;</kbd><kbd>&darr;</kbd> ou <kbd>1</kbd>–<kbd>4</kbd> ângulo ·
+          <kbd>PgUp</kbd><kbd>PgDn</kbd> trânsito · <kbd>F</kbd> ampliar
+        </div>
+        <div class="acoes-dir">
+          <span class="aviso-bloqueio" id="aviso-bloqueio" hidden></span>
+          <button class="btn-dec btn-no" id="btn-descartar">Descartar <kbd>&#9003;</kbd></button>
+          <button class="btn-dec btn-ok" id="btn-autuar">Autuar <kbd>&#9166;</kbd></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────────────────────── T4 · RESUMO ───────────────────────── -->
+    <section class="tela centraliza" id="tela-resumo">
+      <div class="resumo">
+        <h2>Resumo da sessão</h2>
+        <p class="sub" id="resumo-sub"></p>
+
+        <div class="numeros">
+          <div class="num num-ok"><b id="r-ok">0</b><span>autuados, viram laudo</span></div>
+          <div class="num num-no"><b id="r-no">0</b><span>descartados</span></div>
+          <div class="num num-sem"><b id="r-sem">0</b><span>sem evidência</span></div>
+          <div class="num"><b id="r-pend">0</b><span>sem decisão</span></div>
+        </div>
+
+        <div class="alerta alerta-aviso" id="aviso-pendentes" hidden></div>
+        <div class="alerta alerta-ok" id="aviso-gerado" hidden></div>
+
+        <div class="painel">
+          <h4>Descartes por motivo</h4>
+          <div class="motivos" id="motivos"></div>
+        </div>
+
+        <div class="campo-linha">
+          <label for="pasta">Pasta da remessa — segue por e-mail, compactada em .zip</label>
+          <input type="text" class="entrada" id="pasta" spellcheck="false">
+        </div>
+
+        <div class="resumo-acoes">
+          <button class="btn-fantasma" id="voltar-conferencia">&lsaquo; Voltar à conferência</button>
+          <span style="flex:1"></span>
+          <button class="btn-primario" id="gerar">Gerar remessa</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────── sobreposição · motivos ─────────────────── -->
+    <div class="cortina" id="cortina-motivos">
+      <div class="caixa c-media">
+        <h3>Por que descartar?</h3>
+        <p class="sub">O motivo entra na trilha de auditoria e no resumo da sessão.
+           Não sai no laudo.</p>
+        <div class="opcoes" id="opcoes-motivo"></div>
+        <div class="campo-outros" id="campo-outros" hidden>
+          <label for="txt-outros">Descreva o motivo — obrigatório</label>
+          <textarea id="txt-outros" placeholder="O que aconteceu neste trânsito?"></textarea>
+        </div>
+        <div class="caixa-acoes">
+          <button class="btn-fantasma" data-fecha="1">Cancelar</button>
+          <button class="btn-primario" id="confirmar-descarte" hidden disabled>Confirmar descarte</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────────────── sobreposição · ampliação ────────────────── -->
+    <div class="cortina" id="cortina-lente">
+      <div class="lente">
+        <div class="lente-palco" id="lente-palco"></div>
+        <div class="lente-pe">
+          <span id="lente-legenda"></span>
+          <span class="separa"></span>
+          <span>rolar = zoom · arrastar = mover · duplo clique = ajustar</span>
+          <button class="btn-mini" data-fecha="1">Fechar <kbd>Esc</kbd></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="notas">
+  <div class="nota-card">
+    <h4>Os quatro ângulos</h4>
+    <p><code>F</code> frontal identifica a placa · <code>P</code> panorâmica mostra a faixa ·
+       <code>L</code> lateral e <code>T</code> traseira reforçam. Em motocicleta a traseira
+       assume o lugar da frontal — veja o trânsito 6.</p>
+  </div>
+  <div class="nota-card">
+    <h4>A prévia não é modal</h4>
+    <p>Ela ocupa um terço fixo da direita e se refaz a cada foto marcada, incluindo a
+       quebra entre a primeira e a segunda página. Escolher a evidência e ver o resultado
+       viraram o mesmo gesto.</p>
+  </div>
+  <div class="nota-card">
+    <h4>Experimente</h4>
+    <p>Marque mais de quatro fotos e veja a página 2 aparecer. Tente autuar com só uma
+       foto. Descarte com <code>Outros</code> e note que o botão só libera com a descrição
+       escrita.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════ dados de exemplo */
+var ANGULOS = { F:'Frontal', P:'Panorâmica', L:'Lateral', T:'Traseira' };
+var MIN_FOTOS = 2, MAX_FOTOS = 8, POR_PAGINA = 4;
+
+/* ID = conces(2) + praça(2) + pista(5) + AAAAMMDDHHMMSS(14) + seq(4) = 27 */
+function id(praca, pista, dh, seq){ return '34' + praca + pista + dh + seq; }
+
+var TRANSITOS = [
+  { id:id('02','01LFF','20260825091422','3401'), placa:'NDU8490', ocr:'NDU8490',
+    data:'25/08/2026', hora:'09:14:22', pista:'01LFF', faixa:'03', direcao:'Contramão',
+    vel:'78', cat:'Passeio', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Pagamento', fpago:'Free Flow',
+    fotos:['F01','F02','P01','L01','T01'] },
+
+  { id:id('02','01LFF','20260825092715','8820'), placa:'RQI2E47', ocr:'RQI2E47',
+    data:'25/08/2026', hora:'09:27:15', pista:'01LFF', faixa:'02', direcao:'Normal',
+    vel:'62', cat:'Passeio', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Pagamento', fpago:'TAG',
+    fotos:['F01','P01','L01','T01'] },
+
+  { id:id('03','01LFF','20260825094803','1157'), placa:'OXH7231', ocr:'0XH7231',
+    data:'25/08/2026', hora:'09:48:03', pista:'01LFF', faixa:'03', direcao:'Contramão',
+    vel:'91', cat:'Comercial 2 eixos', modo:'A', estado:'C', status:'Faturada',
+    tpago:'Pagamento', fpago:'Free Flow',
+    fotos:['F01','F02','F03','P01','P02','L01','L02','T01','T02'] },
+
+  { id:id('03','01LFF','20260825101139','4462'), placa:'MTB4C09', ocr:'MTB4C09',
+    data:'25/08/2026', hora:'10:11:39', pista:'01LFF', faixa:'02', direcao:'Normal',
+    vel:'55', cat:'Passeio', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Isento', fpago:'Nada',
+    fotos:['F01','P01','T01'] },
+
+  { id:id('04','01LFF','20260825103327','7156'), placa:'QRA1188', ocr:'QRA1188',
+    data:'25/08/2026', hora:'10:33:27', pista:'01LFF', faixa:'03', direcao:'Contramão',
+    vel:'104', cat:'Comercial 3 eixos', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Pagamento', fpago:'TAG',
+    fotos:['F01','P01','L01','T01'] },
+
+  { id:id('04','01LFF','20260825110240','4803'), placa:'NBS9077', ocr:'NBS9077',
+    data:'25/08/2026', hora:'11:02:40', pista:'01LFF', faixa:'02', direcao:'Normal',
+    vel:'69', cat:'Motocicleta', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Pagamento', fpago:'Free Flow',
+    fotos:['F01','P01','T01','T02'] },
+
+  { id:id('05','01LFF','20260825114851','6629'), placa:'PWE3D21', ocr:'—',
+    data:'25/08/2026', hora:'11:48:51', pista:'01LFF', faixa:'03', direcao:'Contramão',
+    vel:'83', cat:'Passeio', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Pagamento', fpago:'Free Flow',
+    fotos:[] },
+
+  { id:id('05','01LFF','20260825123533','1247'), placa:'LZK5560', ocr:'LZK5560',
+    data:'25/08/2026', hora:'12:35:33', pista:'01LFF', faixa:'01', direcao:'Normal',
+    vel:'74', cat:'Comercial 2 eixos', modo:'A', estado:'C', status:'Rejeitada',
+    tpago:'Violação', fpago:'Fantasma',
+    fotos:['F01','F02','P01','P02','L01','T01'] },
+
+  { id:id('02','01LFF','20260825131109','4458'), placa:'RDM7E14', ocr:'RDM7E14',
+    data:'25/08/2026', hora:'13:11:09', pista:'01LFF', faixa:'03', direcao:'Normal',
+    vel:'88', cat:'Passeio', modo:'A', estado:'C', status:'Aceitada',
+    tpago:'Pagamento', fpago:'TAG',
+    fotos:['F01','P01','L01','T01'] }
+];
+
+/* mesma lista nos dois módulos */
+var MOTIVOS = ['Veículo de emergência','Pedestre / ciclista','Veículo sem placa',
+               'Placa não identificada','Sem registro fotográfico',
+               'Veículo na faixa correta','Alteração na faixa de tráfego',
+               'Outros (descreva)'];
+var MOTIVO_LIVRE = 'Outros (descreva)';
+var MOTIVO_SEM_FOTO = 'Sem registro fotográfico';
+
+var MODULOS = {
+  contramao:  { nome:'Contramão',
+                titulo:'COMPROVAÇÃO DE TRÂNSITO - CONTRAMÃO' },
+  acostamento:{ nome:'Acostamento',
+                titulo:'COMPROVAÇÃO DE TRÂNSITO - ACOSTAMENTO' }
+};
+
+var DECL = 'Este documento é apenas uma evidência fotográfica do tráfego registrado '
+         + 'pelas câmeras do Free-flow, não sendo a concessionária responsável por '
+         + 'emissão da autuação.';
+
+/* ══════════════════════════════════════════════════════════ estado */
+function estadosNovos(){
+  return TRANSITOS.map(function(){
+    return { decisao:null, motivo:'', descricao:'', sel:[] };
+  });
+}
+var E = { tela:'modulos', modulo:'contramao', indice:0, foto:0,
+          brilho:100, contraste:100, estados:estadosNovos(), motivoEscolhido:null };
+
+var $  = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return [].slice.call(document.querySelectorAll(s)); };
+var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+
+function atual(){ return TRANSITOS[E.indice]; }
+function estAtual(){ return E.estados[E.indice]; }
+function ehMoto(t){ return /moto/i.test(t.cat); }
+
+/* RN-06 — ordem F,P,L,T; em moto T,P,F,L */
+function ordemAngulos(t){ return ehMoto(t) ? ['T','P','F','L'] : ['F','P','L','T']; }
+
+function fotosOrdenadas(t){
+  var ordem = ordemAngulos(t);
+  return t.fotos.slice().sort(function(a,b){
+    var d = ordem.indexOf(a[0]) - ordem.indexOf(b[0]);
+    return d !== 0 ? d : a.localeCompare(b);
+  });
+}
+function selecaoOrdenada(i){
+  var sel = E.estados[i].sel;
+  return fotosOrdenadas(TRANSITOS[i]).filter(function(c){ return sel.indexOf(c) >= 0; });
+}
+/* RN-05 — identificação da placa + panorâmica */
+function selecaoSugerida(t){
+  var identificacao = ehMoto(t) ? 'T' : 'F';
+  var out = [];
+  [identificacao, 'P'].forEach(function(ang){
+    var achou = fotosOrdenadas(t).filter(function(c){ return c[0] === ang; })[0];
+    if (achou) out.push(achou);
+  });
+  return out;
+}
+
+/* ═══════════════════ desenho esquemático das capturas · 4:3 (640×480) */
+function hud(cod, t){
+  var nome = ANGULOS[cod[0]] || cod;
+  return '<g font-family="IBM Plex Mono, monospace" font-size="12">'
+    + '<rect x="0" y="0" width="640" height="26" fill="#000" opacity=".55"/>'
+    + '<text x="10" y="18" fill="#d8e0e6">CAM ' + esc(cod) + ' · ' + esc(nome.toUpperCase()) + '</text>'
+    + '<text x="630" y="18" fill="#d8e0e6" text-anchor="end">' + esc(t.data) + ' ' + esc(t.hora) + '</text>'
+    + '<rect x="0" y="454" width="640" height="26" fill="#000" opacity=".55"/>'
+    + '<text x="10" y="472" fill="#9fb0bd" font-size="10">' + esc(t.id) + '</text>'
+    + '<text x="630" y="472" fill="#7d8d99" font-size="10" text-anchor="end">IMAGEM SIMULADA</text>'
+    + '</g>';
+}
+
+function placa(cx, cy, w, texto){
+  var h = w * 0.34;
+  return '<g>'
+    + '<rect x="' + (cx-w/2) + '" y="' + (cy-h/2) + '" width="' + w + '" height="' + h
+      + '" rx="' + (h*0.14) + '" fill="#f2f4f6" stroke="#c9d0d6"/>'
+    + '<rect x="' + (cx-w/2) + '" y="' + (cy-h/2) + '" width="' + w + '" height="' + (h*0.26)
+      + '" fill="#1b4a9c"/>'
+    + '<text x="' + cx + '" y="' + (cy + h*0.30) + '" text-anchor="middle"'
+      + ' font-family="IBM Plex Mono, monospace" font-size="' + (h*0.52)
+      + '" fill="#12171b" letter-spacing="1">' + esc(texto) + '</text>'
+    + '</g>';
+}
+
+function carroFrente(cx, cy, k, cor, luz, txtPlaca){
+  var w = 150*k, h = 96*k;
+  return '<g>'
+    + '<rect x="' + (cx-w/2*0.78) + '" y="' + (cy-h/2-32*k) + '" width="' + (w*0.78)
+      + '" height="' + (36*k) + '" rx="' + (8*k) + '" fill="' + cor + '"/>'
+    + '<rect x="' + (cx-w/2*0.68) + '" y="' + (cy-h/2-25*k) + '" width="' + (w*0.68)
+      + '" height="' + (24*k) + '" rx="' + (5*k) + '" fill="#0e1418" opacity=".85"/>'
+    + '<rect x="' + (cx-w/2) + '" y="' + (cy-h/2) + '" width="' + w + '" height="' + h
+      + '" rx="' + (11*k) + '" fill="' + cor + '"/>'
+    + '<rect x="' + (cx-w/2+9*k) + '" y="' + (cy-h/2+14*k) + '" width="' + (34*k)
+      + '" height="' + (15*k) + '" rx="' + (5*k) + '" fill="' + luz + '"/>'
+    + '<rect x="' + (cx+w/2-43*k) + '" y="' + (cy-h/2+14*k) + '" width="' + (34*k)
+      + '" height="' + (15*k) + '" rx="' + (5*k) + '" fill="' + luz + '"/>'
+    + placa(cx, cy + h/2 - 20*k, 62*k, txtPlaca)
+    + '<rect x="' + (cx-w/2-5*k) + '" y="' + (cy+h/2-18*k) + '" width="' + (13*k)
+      + '" height="' + (23*k) + '" rx="' + (4*k) + '" fill="#0b0f12"/>'
+    + '<rect x="' + (cx+w/2-8*k) + '" y="' + (cy+h/2-18*k) + '" width="' + (13*k)
+      + '" height="' + (23*k) + '" rx="' + (4*k) + '" fill="#0b0f12"/>'
+    + '</g>';
+}
+
+function motoFrente(cx, cy, k, txtPlaca, traseira){
+  return '<g>'
+    + '<ellipse cx="' + cx + '" cy="' + (cy+34*k) + '" rx="' + (17*k) + '" ry="' + (30*k) + '" fill="#0b0f12"/>'
+    + '<rect x="' + (cx-26*k) + '" y="' + (cy-30*k) + '" width="' + (52*k) + '" height="' + (60*k)
+      + '" rx="' + (14*k) + '" fill="#39424a"/>'
+    + '<rect x="' + (cx-40*k) + '" y="' + (cy-52*k) + '" width="' + (80*k) + '" height="' + (10*k)
+      + '" rx="' + (5*k) + '" fill="#22292f"/>'
+    + '<circle cx="' + cx + '" cy="' + (cy-40*k) + '" r="' + (14*k) + '" fill="'
+      + (traseira ? '#c0392b' : '#f6e3a1') + '"/>'
+    + placa(cx, cy + 46*k, 46*k, txtPlaca)
+    + '</g>';
+}
+
+function carroLado(cx, cy, k, cor){
+  var w = 230*k, h = 60*k;
+  return '<g>'
+    + '<path d="M ' + (cx-w*0.30) + ' ' + (cy-h/2) + ' L ' + (cx-w*0.20) + ' ' + (cy-h/2-36*k)
+      + ' L ' + (cx+w*0.16) + ' ' + (cy-h/2-36*k) + ' L ' + (cx+w*0.28) + ' ' + (cy-h/2) + ' Z" fill="' + cor + '"/>'
+    + '<rect x="' + (cx-w/2) + '" y="' + (cy-h/2) + '" width="' + w + '" height="' + h
+      + '" rx="' + (12*k) + '" fill="' + cor + '"/>'
+    + '<path d="M ' + (cx-w*0.26) + ' ' + (cy-h/2-3*k) + ' L ' + (cx-w*0.18) + ' ' + (cy-h/2-29*k)
+      + ' L ' + (cx+w*0.13) + ' ' + (cy-h/2-29*k) + ' L ' + (cx+w*0.23) + ' ' + (cy-h/2-3*k) + ' Z"'
+      + ' fill="#0e1418" opacity=".85"/>'
+    + '<circle cx="' + (cx-w*0.29) + '" cy="' + (cy+h/2) + '" r="' + (20*k) + '" fill="#0b0f12"/>'
+    + '<circle cx="' + (cx-w*0.29) + '" cy="' + (cy+h/2) + '" r="' + (8*k) + '" fill="#39424a"/>'
+    + '<circle cx="' + (cx+w*0.30) + '" cy="' + (cy+h/2) + '" r="' + (20*k) + '" fill="#0b0f12"/>'
+    + '<circle cx="' + (cx+w*0.30) + '" cy="' + (cy+h/2) + '" r="' + (8*k) + '" fill="#39424a"/>'
+    + '</g>';
+}
+
+function cena(cod, t){
+  var ang = cod[0], infra = E.modulo, corpo = '';
+  var moto = ehMoto(t);
+
+  if (ang === 'F' || ang === 'T') {
+    /* camera do portico, pista em perspectiva, fuga em (320,158) */
+    var tras = (ang === 'T');
+    corpo += '<rect width="640" height="480" fill="#0e1216"/>'
+      + '<rect width="640" height="160" fill="#1b232a"/>'
+      + '<polygon points="320,158 -70,480 710,480" fill="#31383e"/>'
+      + '<polygon points="319,158 -28,480 -2,480 321,158" fill="#e9edf0" opacity=".85"/>'
+      + '<polygon points="321,158 642,480 668,480 323,158" fill="#e9edf0" opacity=".85"/>'
+      + '<polygon points="318,158 292,480 302,480 320,158" fill="#f2b134"/>'
+      + '<polygon points="322,158 338,480 348,480 324,158" fill="#f2b134"/>'
+      + '<polygon points="323,158 668,480 710,480 325,158" fill="#4a5157" opacity=".55"/>';
+
+    var cx = (infra === 'contramao') ? 214 : 470;
+    var cy = (infra === 'contramao') ? 336 : 356;
+    corpo += moto
+      ? motoFrente(cx, cy, 1.15, t.placa, tras)
+      : carroFrente(cx, cy, 0.98, tras ? '#5a6672' : (infra === 'contramao' ? '#8d3b39' : '#375d7a'),
+                    tras ? '#c0392b' : '#f6e3a1', t.placa);
+
+    corpo += '<g font-family="IBM Plex Mono, monospace" font-size="13">'
+      + '<rect x="386" y="196" width="196" height="30" rx="5" fill="#0c1013" opacity=".72"/>'
+      + '<text x="484" y="216" fill="#7fd8a2" text-anchor="middle">PLACA LEGÍVEL</text>'
+      + '</g>';
+    corpo += '<rect width="640" height="480" fill="url(#veu)"/>';
+  }
+  else if (ang === 'P') {
+    /* panoramica: vista alta da pista inteira — mostra em que faixa esta */
+    corpo += '<rect width="640" height="480" fill="#0e1216"/>'
+      + '<rect width="640" height="118" fill="#1b232a"/>'
+      + '<rect y="118" width="640" height="362" fill="#31383e"/>';
+    /* 3 faixas + acostamento a direita */
+    var y0 = 150, alt = 74;
+    for (var f = 0; f < 3; f++) {
+      var y = y0 + f * alt;
+      corpo += '<line x1="0" y1="' + y + '" x2="640" y2="' + y + '" stroke="#e9edf0"'
+        + ' stroke-width="2" stroke-dasharray="' + (f === 0 ? '0' : '26 20') + '" opacity=".8"/>';
+      corpo += '<text x="14" y="' + (y + 24) + '" font-family="IBM Plex Mono, monospace"'
+        + ' font-size="13" fill="#8e9aa4">FAIXA 0' + (f + 1) + '</text>';
+    }
+    var yBordo = y0 + 3 * alt;
+    corpo += '<rect y="' + yBordo + '" width="640" height="4" fill="#e9edf0"/>'
+      + '<rect y="' + (yBordo + 4) + '" width="640" height="' + (480 - yBordo - 4) + '" fill="#464d53"/>';
+    for (var x = -60; x < 700; x += 30) {
+      corpo += '<line x1="' + x + '" y1="480" x2="' + (x + 46) + '" y2="' + (yBordo + 4)
+        + '" stroke="#e9edf0" stroke-width="1.4" opacity=".26"/>';
+    }
+    corpo += '<text x="14" y="' + (yBordo + 30) + '" font-family="IBM Plex Mono, monospace"'
+      + ' font-size="13" fill="#8e9aa4">ACOSTAMENTO</text>';
+
+    /* faixa ocupada, destacada */
+    var idxFaixa = Math.min(parseInt(t.faixa, 10) || 1, 3) - 1;
+    var yv = (infra === 'acostamento') ? (yBordo + 34) : (y0 + idxFaixa * alt + alt / 2);
+    if (infra === 'acostamento') {
+      corpo += '<rect y="' + (yBordo + 4) + '" width="640" height="' + (480 - yBordo - 4)
+        + '" fill="#e05a52" opacity=".16"/>';
+    } else {
+      corpo += '<rect y="' + (y0 + idxFaixa * alt) + '" width="640" height="' + alt
+        + '" fill="#e05a52" opacity=".16"/>';
+    }
+    corpo += moto ? motoFrente(300, yv - 6, 0.72, t.placa, false)
+                  : carroLado(300, yv, 0.62, infra === 'contramao' ? '#8d3b39' : '#375d7a');
+
+    /* sentido do fluxo x sentido do veiculo */
+    corpo += '<g stroke="#9fb0bd" stroke-width="2" fill="none" opacity=".9">'
+      + '<path d="M 470 132 L 560 132"/><path d="M 548 124 L 560 132 L 548 140"/></g>'
+      + '<text x="470" y="118" font-family="IBM Plex Mono, monospace" font-size="11"'
+      + ' fill="#9fb0bd">fluxo</text>';
+    if (infra === 'contramao') {
+      corpo += '<g stroke="#e05a52" stroke-width="3" fill="none">'
+        + '<path d="M 470 ' + (yv - 46) + ' L 380 ' + (yv - 46) + '"/>'
+        + '<path d="M 392 ' + (yv - 54) + ' L 380 ' + (yv - 46) + ' L 392 ' + (yv - 38) + '"/></g>'
+        + '<text x="478" y="' + (yv - 42) + '" font-family="IBM Plex Mono, monospace"'
+        + ' font-size="12" fill="#e05a52">sentido do veículo</text>';
+    } else {
+      corpo += '<text x="378" y="' + (yv - 42) + '" font-family="IBM Plex Mono, monospace"'
+        + ' font-size="12" fill="#e05a52">fora das faixas de rolamento</text>';
+    }
+    corpo += '<rect width="640" height="480" fill="url(#veu)"/>';
+  }
+  else { /* L — lateral */
+    corpo += '<rect width="640" height="480" fill="#0e1216"/>'
+      + '<rect width="640" height="236" fill="#1b232a"/>'
+      + '<rect y="236" width="640" height="244" fill="#31383e"/>';
+    if (infra === 'acostamento') {
+      corpo += '<rect y="336" width="640" height="4" fill="#e9edf0"/>'
+        + '<rect y="340" width="640" height="140" fill="#464d53"/>';
+      for (var xa = -50; xa < 700; xa += 30) {
+        corpo += '<line x1="' + xa + '" y1="480" x2="' + (xa + 62) + '" y2="340"'
+          + ' stroke="#e9edf0" stroke-width="1.4" opacity=".26"/>';
+      }
+      corpo += carroLado(300, 336, 1.0, '#375d7a');
+      corpo += '<g stroke="#e05a52" stroke-width="3"><path d="M 470 338 L 470 400"/></g>'
+        + '<text x="480" y="392" font-family="IBM Plex Mono, monospace" font-size="12"'
+        + ' fill="#e05a52">roda sobre o acostamento</text>';
+    } else {
+      corpo += '<rect y="400" width="640" height="4" fill="#e9edf0"/>';
+      for (var xb = 40; xb < 640; xb += 104) {
+        corpo += '<rect x="' + xb + '" y="286" width="58" height="6" fill="#f2b134"/>';
+      }
+      corpo += carroLado(310, 344, 1.0, '#8d3b39');
+      corpo += '<g stroke="#e05a52" stroke-width="3" fill="none">'
+        + '<path d="M 140 344 L 74 344"/><path d="M 88 334 L 74 344 L 88 354"/></g>'
+        + '<text x="150" y="262" font-family="IBM Plex Mono, monospace" font-size="12"'
+        + ' fill="#e05a52">sentido do veículo</text>'
+        + '<g stroke="#9fb0bd" stroke-width="2" fill="none">'
+        + '<path d="M 500 262 L 568 262"/><path d="M 556 254 L 568 262 L 556 270"/></g>'
+        + '<text x="440" y="246" font-family="IBM Plex Mono, monospace" font-size="11"'
+        + ' fill="#9fb0bd">fluxo da faixa</text>';
+    }
+    corpo += '<rect width="640" height="480" fill="url(#veu)"/>';
+  }
+
+  return '<svg viewBox="0 0 640 480" preserveAspectRatio="xMidYMid meet"'
+    + ' xmlns="http://www.w3.org/2000/svg" role="img"'
+    + ' aria-label="Representação esquemática da captura ' + esc(cod) + '">'
+    + '<defs><linearGradient id="veu" x1="0" y1="0" x2="0" y2="1">'
+    + '<stop offset="0" stop-color="#000" stop-opacity=".18"/>'
+    + '<stop offset="0.45" stop-color="#000" stop-opacity="0"/>'
+    + '<stop offset="1" stop-color="#000" stop-opacity=".3"/>'
+    + '</linearGradient></defs>' + corpo + hud(cod, t) + '</svg>';
+}
+
+function miniatura(cod, t){
+  return cena(cod, t).replace(/<g font-family="IBM Plex Mono, monospace" font-size="12">[\s\S]*?<\/g>/, '');
+}
+
+/* ══════════════════════════════════════════════════════ navegação */
+function irPara(tela){
+  E.tela = tela;
+  ['modulos','carga','conferencia','resumo'].forEach(function(t){
+    var el = $('#tela-' + t);
+    if (el) el.classList.toggle('on', t === tela);
+  });
+  $('#chip-modulo').hidden = (tela === 'modulos');
+  $$('.chip-tela').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.ir === tela));
+  });
+  if (tela === 'conferencia') desenharConferencia();
+  if (tela === 'resumo') desenharResumo();
+}
+
+function definirModulo(m){
+  E.modulo = m;
+  $('#nome-modulo').textContent = MODULOS[m].nome;
+  $('#marca-modulo').className = 'marca-pista mp-' + m;
+  $('#resumo-sub').textContent = MODULOS[m].nome
+    + ' · TransactionSelectionReport_20260825.xlsx · Praças 02 a 05 · 25/08/2026';
+  $('#pasta').value = 'C:\\Autuacoes\\' + m.toUpperCase() + '_20260825_v1';
+}
+
+/* ════════════════════════════════════════════ tela 3 · conferência */
+function desenharConferencia(){
+  desenharTrilha(); desenharDados(); desenharAbas();
+  desenharTira(); desenharPalco(); desenharPrevia();
+  desenharNav(); desenharContadores();
+}
+
+function desenharTrilha(){
+  var tr = $('#trilha');
+  tr.innerHTML = '';
+  TRANSITOS.forEach(function(t, i){
+    var b = document.createElement('button');
+    var e = E.estados[i];
+    b.type = 'button';
+    b.title = (i+1) + ' · ' + t.placa + ' · ' + t.hora;
+    if (e.decisao === 'autuado') b.className = 't-ok';
+    else if (e.decisao === 'descartado') b.className = 't-no';
+    else if (!t.fotos.length) b.className = 't-sem';
+    if (i === E.indice) b.className += ' t-atual';
+    b.addEventListener('click', function(){ E.indice = i; E.foto = 0; desenharConferencia(); });
+    tr.appendChild(b);
+  });
+}
+
+/* dados do trânsito E informações complementares — um bloco só (RF-16) */
+function desenharDados(){
+  var t = atual();
+  var campos = [
+    { r:'Concessionária', v:'BRN - 364' },
+    { r:'Praça',          v:'P' + t.id.slice(2,4) },
+    { r:'Pista',          v:t.pista },
+    { r:'Faixa',          v:t.faixa, forte:true },
+    { r:'Direção',        v:t.direcao, forte:t.direcao === 'Contramão' },
+    { r:'Data',           v:t.data },
+
+    { r:'Hora',           v:t.hora },
+    { r:'Placa',          v:t.placa, forte:true },
+    { r:'Categoria',      v:t.cat, forte:true },
+    { r:'Velocidade',     v:t.vel + ' km/h' },
+    { r:'ID Transação',   v:t.id, mono:true },
+    { r:'Pasta no servidor', v:t.fotos.length ? t.id.slice(0,9) : '—', mono:true },
+
+    { r:'Modo',           v:t.modo, fraco:true },
+    { r:'Estado',         v:t.estado, fraco:true },
+    { r:'Status',         v:t.status, fraco:true },
+    { r:'T. Pago',        v:t.tpago, fraco:true },
+    { r:'F. Pago',        v:t.fpago, fraco:true },
+    { r:'Imagens',        v:t.fotos.length ? t.fotos.length + ' recuperadas' : 'nenhuma', fraco:true }
+  ];
+  $('#grade-dados').innerHTML = campos.map(function(c){
+    var cls = 'gd' + (c.forte ? ' destaque' : '') + (c.mono ? ' mono' : '')
+            + (c.fraco ? ' fraco' : '');
+    return '<div class="' + cls + '" title="' + esc(c.v) + '"><em>' + esc(c.r)
+      + '</em><b>' + esc(c.v) + '</b></div>';
+  }).join('');
+
+  var e = estAtual(), selos = [];
+  selos.push('<span class="selo">Trânsito ' + (E.indice+1) + ' de ' + TRANSITOS.length + '</span>');
+  if (ehMoto(t))
+    selos.push('<span class="selo selo-alerta">Motocicleta — a traseira identifica a placa</span>');
+  if (t.ocr !== t.placa && t.fotos.length && t.ocr !== '—')
+    selos.push('<span class="selo selo-alerta">Placa diverge do OCR (' + esc(t.ocr) + ')</span>');
+  if (!t.fotos.length)
+    selos.push('<span class="selo selo-alerta">Sem evidência — HTTP 404 na pasta '
+               + esc(t.id.slice(0,9)) + '</span>');
+  if (e.decisao === 'autuado') selos.push('<span class="selo selo-ok">Autuado</span>');
+  if (e.decisao === 'descartado')
+    selos.push('<span class="selo selo-no">Descartado: ' + esc(e.motivo)
+               + (e.descricao ? ' — ' + esc(e.descricao) : '') + '</span>');
+  $('#selos').innerHTML = selos.join('');
+}
+
+function desenharAbas(){
+  var t = atual(), fotos = fotosOrdenadas(t);
+
+  $('#abas').innerHTML = ordemAngulos(t).map(function(a, n){
+    var qtd = fotos.filter(function(c){ return c[0] === a; }).length;
+    var ativo = fotos.length && fotos[E.foto] && fotos[E.foto][0] === a;
+    var quantas = qtd === 0 ? 'nenhuma foto'
+                : qtd === 1 ? '1 foto' : qtd + ' fotos';
+    return '<button class="aba' + (ativo ? ' on' : '') + '" data-ang="' + a + '"'
+      + (qtd ? '' : ' disabled')
+      + ' title="' + ANGULOS[a] + ' · ' + quantas + ' · tecla ' + (n+1) + '">'
+      + a + '<span>' + (qtd || '—') + '</span></button>';
+  }).join('');
+
+  $$('#abas .aba').forEach(function(b){
+    b.addEventListener('click', function(){ irParaAngulo(b.dataset.ang); });
+  });
+}
+
+/* uma so porta de entrada para trocar de foto: setas do teclado e da tela */
+function mudarFoto(delta){
+  var fotos = fotosOrdenadas(atual());
+  if (fotos.length < 2) return;
+  E.foto = (E.foto + delta + fotos.length) % fotos.length;
+  desenharConferencia();
+}
+
+function irParaAngulo(ang){
+  var fotos = fotosOrdenadas(atual());
+  for (var i = 0; i < fotos.length; i++) {
+    if (fotos[i][0] === ang) { E.foto = i; desenharConferencia(); return; }
+  }
+}
+
+function desenharPalco(){
+  var t = atual(), fotos = fotosOrdenadas(t), p = $('#palco'), marca = $('#marca-sel');
+  var antigo = p.querySelector('svg, .palco-vazio');
+  if (antigo) antigo.remove();
+
+  /* setas so aparecem quando ha mais de uma foto para percorrer */
+  var varias = fotos.length > 1;
+  $('#foto-ant').hidden = !varias;
+  $('#foto-prox').hidden = !varias;
+  $('#pos-foto').hidden = !fotos.length;
+  if (fotos.length) $('#pos-foto').textContent = (E.foto + 1) + ' / ' + fotos.length;
+
+  if (!fotos.length) {
+    marca.hidden = true;
+    var v = document.createElement('div');
+    v.className = 'palco-vazio';
+    v.innerHTML = '<b>Sem evidência</b>Nenhuma imagem recuperada para este trânsito.<br>'
+      + 'HTTP 404 · http://10.0.0.11/PHOTOS//20260825/' + esc(t.id.slice(0,9)) + '/'
+      + esc(t.id) + '-F01.jpg<br><br>Este trânsito não pode ser autuado.';
+    p.appendChild(v);
+    return;
+  }
+  if (E.foto >= fotos.length) E.foto = 0;
+  var cod = fotos[E.foto];
+  p.insertAdjacentHTML('afterbegin', cena(cod, t));
+  var svg = p.querySelector('svg');
+  svg.style.filter = 'brightness(' + (E.brilho/100) + ') contrast(' + (E.contraste/100) + ')';
+  svg.addEventListener('click', abrirLente);        /* clicar na imagem amplia */
+
+  var dentro = estAtual().sel.indexOf(cod) >= 0;
+  marca.hidden = false;
+  marca.className = 'marca-sel' + (dentro ? ' ativa' : '');
+  marca.textContent = dentro ? '\u2713 no laudo · ' + cod : 'fora do laudo · ' + cod;
+}
+
+function desenharTira(){
+  var t = atual(), fotos = fotosOrdenadas(t), e = estAtual();
+  var lista = $('#tira-lista'), conta = $('#conta-sel');
+
+  conta.textContent = e.sel.length + ' de ' + MAX_FOTOS;
+  conta.classList.toggle('alerta', e.sel.length >= MAX_FOTOS || e.sel.length < MIN_FOTOS);
+
+  if (!fotos.length) {
+    lista.innerHTML = '<span style="font-size:11.5px;color:var(--a-suave);padding:14px 2px">'
+      + 'Nenhuma imagem para escolher.</span>';
+    return;
+  }
+
+  var ordenada = selecaoOrdenada(E.indice);
+  lista.innerHTML = fotos.map(function(cod, i){
+    var sel = e.sel.indexOf(cod) >= 0;
+    var pos = ordenada.indexOf(cod) + 1;
+    var pag = Math.floor((pos - 1) / POR_PAGINA) + 1;
+    return '<button class="mini-foto' + (sel ? ' sel' : '') + (i === E.foto ? ' atual' : '')
+      + '" data-cod="' + cod + '" aria-pressed="' + sel + '" title="'
+      + esc(ANGULOS[cod[0]]) + ' · ' + cod + '">'
+      + miniatura(cod, t)
+      + '<span class="tique">\u2713</span>'
+      + '<span class="ordem">' + pos + ' · p' + pag + '</span>'
+      + '<span class="rot">' + cod + '</span></button>';
+  }).join('');
+
+  $$('#tira-lista .mini-foto').forEach(function(b){
+    b.addEventListener('click', function(){
+      E.foto = fotosOrdenadas(atual()).indexOf(b.dataset.cod);
+      alternarFoto(b.dataset.cod);
+    });
+  });
+}
+
+function alternarFoto(cod){
+  var e = estAtual(), i = e.sel.indexOf(cod);
+  if (i >= 0) e.sel.splice(i, 1);
+  else {
+    if (e.sel.length >= MAX_FOTOS) { avisarLimite(); return; }
+    e.sel.push(cod);
+  }
+  desenharTira(); desenharPalco(); desenharPrevia(); desenharNav();
+}
+
+function avisarLimite(){
+  var c = $('#conta-sel');
+  c.textContent = 'máximo de ' + MAX_FOTOS + ' fotos';
+  c.classList.add('alerta');
+  setTimeout(desenharTira, 1600);
+}
+
+/* ─────────────────────────── prévia embutida (RF-23, RF-30) ──────── */
+function paginasDe(sel){
+  var pgs = [];
+  for (var i = 0; i < sel.length; i += POR_PAGINA) pgs.push(sel.slice(i, i + POR_PAGINA));
+  return pgs.length ? pgs : [[]];
+}
+
+function desenharPrevia(){
+  var t = atual(), sel = selecaoOrdenada(E.indice), mod = MODULOS[E.modulo];
+  var alvo = $('#previa-rolagem');
+
+  if (!sel.length) {
+    $('#tag-pag').textContent = '';
+    alvo.innerHTML = '<div class="pv-folha"><div class="pv-vazio">'
+      + 'Nenhuma foto marcada.<br>O laudo precisa de pelo menos ' + MIN_FOTOS
+      + ' — a que identifica a placa e a panorâmica.</div></div>';
+    return;
+  }
+
+  var dados = [
+    ['Data', t.data], ['Hora', t.hora], ['ID', t.id],
+    ['Rodovia', 'BR-000'], ['Praça', 'P' + t.id.slice(2,4)], ['Pista', t.pista],
+    ['Placa', t.placa], ['Categoria', t.cat], ['Velocidade', t.vel + ' km/h']
+  ];
+  var blocoDados = '<div class="pv-rot">Dados</div><div class="pv-dados">'
+    + dados.map(function(d){
+        return '<div class="pv-campo" title="' + esc(d[1]) + '"><em>' + esc(d[0])
+          + '</em><b>' + esc(d[1]) + '</b></div>';
+      }).join('') + '</div>';
+
+  var pgs = paginasDe(sel);
+  $('#tag-pag').textContent = pgs.length + (pgs.length > 1 ? ' páginas' : ' página')
+    + ' · ' + sel.length + (sel.length > 1 ? ' fotos' : ' foto');
+
+  alvo.innerHTML = pgs.map(function(pg, n){
+    return '<div class="pv-folha">'
+      + (pgs.length > 1 ? '<span class="pv-selo">pág. ' + (n+1) + '</span>' : '')
+      + '<div class="pv-cab"><div class="pv-logo">logo</div>'
+      + '<div class="pv-titulo">' + esc(mod.titulo) + '</div></div>'
+      + '<div class="pv-origem">Analisado por usuário 00598 em 25/08/2026 13:42:11</div>'
+      + blocoDados
+      + '<div class="pv-rot">Evidência fotográfica</div>'
+      + '<div class="pv-fotos">'
+      + pg.map(function(cod){
+          return '<div class="pv-cel"><div class="pv-foto">' + miniatura(cod, t) + '</div>'
+            + '<span>' + esc(ANGULOS[cod[0]]) + ' · ' + esc(t.id) + '-' + cod + '.jpg</span></div>';
+        }).join('')
+      + '</div>'
+      + '<div class="pv-decl"><b>Emitido por Concessionária Rodovia Exemplo S.A.</b><br>'
+      + DECL + '</div>'
+      + '</div>';
+  }).join('') + '<p class="previa-nota">' + notaPrevia(sel.length) + '</p>';
+}
+
+function notaPrevia(n){
+  if (n < MIN_FOTOS)
+    return '<b>Falta ' + (MIN_FOTOS - n) + ' foto</b> para o laudo poder ser gerado.';
+  var pgs = Math.ceil(n / POR_PAGINA);
+  return '<b>' + n + ' fotos</b> em ' + pgs + (pgs > 1 ? ' páginas' : ' página')
+    + ', até ' + POR_PAGINA + ' por página. Máximo de ' + MAX_FOTOS + '.';
+}
+
+function desenharNav(){
+  var t = atual(), sel = selecaoOrdenada(E.indice);
+  $('#contador').textContent = (E.indice+1) + ' / ' + TRANSITOS.length;
+  $('#ant').disabled  = E.indice === 0;
+  $('#prox').disabled = E.indice === TRANSITOS.length - 1;
+
+  var bloqueio = null;
+  if (!t.fotos.length) bloqueio = 'Sem imagem recuperada: não pode ser autuado.';
+  else if (sel.length < MIN_FOTOS)
+    bloqueio = 'Marque ao menos ' + MIN_FOTOS + ' fotos: placa e panorâmica.';
+
+  $('#btn-autuar').disabled = !!bloqueio;
+  var av = $('#aviso-bloqueio');
+  if (bloqueio) { av.hidden = false; av.textContent = bloqueio; } else av.hidden = true;
+}
+
+function desenharContadores(){
+  var ok = 0, no = 0, pend = 0;
+  E.estados.forEach(function(e){
+    if (e.decisao === 'autuado') ok++;
+    else if (e.decisao === 'descartado') no++;
+    else pend++;
+  });
+  $('#c-ok').textContent = ok; $('#c-no').textContent = no; $('#c-pend').textContent = pend;
+}
+
+function decidir(desfecho, motivo, descricao){
+  var e = estAtual();
+  e.decisao = desfecho;
+  e.motivo = motivo || '';
+  e.descricao = descricao || '';
+  proximoPendente();
+}
+
+function proximoPendente(){
+  var n = TRANSITOS.length;
+  for (var d = 1; d <= n; d++) {
+    var i = (E.indice + d) % n;
+    if (!E.estados[i].decisao) { E.indice = i; E.foto = 0; desenharConferencia(); return; }
+  }
+  desenharConferencia();
+  irPara('resumo');
+}
+
+/* ═════════════════════════════════════════════ tela 4 · resumo */
+function desenharResumo(){
+  var ok = 0, no = 0, sem = 0, pend = 0, porMotivo = {};
+  E.estados.forEach(function(e, i){
+    if (e.decisao === 'autuado') ok++;
+    else if (e.decisao === 'descartado') {
+      no++;
+      porMotivo[e.motivo] = (porMotivo[e.motivo] || 0) + 1;
+    }
+    else if (!TRANSITOS[i].fotos.length) sem++;
+    else pend++;
+  });
+
+  $('#r-ok').textContent = ok; $('#r-no').textContent = no;
+  $('#r-sem').textContent = sem; $('#r-pend').textContent = pend;
+
+  var av = $('#aviso-pendentes');
+  if (pend || sem) {
+    av.hidden = false;
+    av.innerHTML = '<b>' + (pend + sem) + ' trânsito' + (pend + sem > 1 ? 's' : '')
+      + ' fora da remessa.</b> ' + pend + ' sem decisão e ' + sem
+      + ' sem evidência. Não geram laudo, mas ficam registrados no resumo.';
+  } else av.hidden = true;
+
+  var chaves = Object.keys(porMotivo);
+  var maior = Math.max.apply(null, chaves.map(function(k){ return porMotivo[k]; }).concat([1]));
+  $('#motivos').innerHTML = chaves.length
+    ? chaves.map(function(k){
+        return '<div class="mot"><span class="barra" style="width:'
+          + (16 + 64 * porMotivo[k] / maior) + 'px"></span><span class="txt">'
+          + esc(k) + '</span><span class="qtd">' + porMotivo[k] + '</span></div>';
+      }).join('')
+    : '<span style="font-size:12px;color:var(--a-suave)">Nenhum descarte nesta sessão.</span>';
+
+  $('#gerar').disabled = ok === 0;
+  $('#gerar').textContent = ok ? 'Gerar remessa · ' + ok + ' laudo' + (ok > 1 ? 's' : '')
+                               : 'Gerar remessa';
+  $('#aviso-gerado').hidden = true;
+}
+
+/* ══════════════════════════════════════════════════ cortinas */
+function abrirCortina(id){ $('#' + id).classList.add('on'); }
+function fecharCortinas(){ $$('.cortina').forEach(function(c){ c.classList.remove('on'); }); }
+function algumaCortina(){ return $$('.cortina.on').length > 0; }
+
+function abrirLente(){
+  var t = atual(), fotos = fotosOrdenadas(t);
+  if (!fotos.length) return;
+  var cod = fotos[E.foto];
+  $('#lente-palco').innerHTML = cena(cod, t);
+  $('#lente-palco').querySelector('svg').style.filter =
+    'brightness(' + (E.brilho/100) + ') contrast(' + (E.contraste/100) + ')';
+  $('#lente-legenda').textContent = ANGULOS[cod[0]] + ' · ' + t.id + '-' + cod + '.jpg';
+  abrirCortina('cortina-lente');
+}
+
+function abrirMotivos(){
+  E.motivoEscolhido = null;
+  $('#campo-outros').hidden = true;
+  $('#txt-outros').value = '';
+  $('#confirmar-descarte').hidden = true;
+  $('#confirmar-descarte').disabled = true;
+
+  /* trânsito sem nenhuma imagem: o motivo já se sabe qual é */
+  var semFoto = !atual().fotos.length;
+  $('#opcoes-motivo').innerHTML = MOTIVOS.map(function(m, i){
+    var sugerida = semFoto && m === MOTIVO_SEM_FOTO;
+    return '<button class="opcao' + (sugerida ? ' sugerida' : '') + '" data-motivo="'
+      + esc(m) + '"><i>' + (i+1) + '</i>' + esc(m)
+      + (sugerida ? '<span class="sugerido">sugerido</span>' : '') + '</button>';
+  }).join('');
+
+  $$('#opcoes-motivo .opcao').forEach(function(b){
+    b.addEventListener('click', function(){
+      var m = b.dataset.motivo;
+      if (m === MOTIVO_LIVRE) {
+        E.motivoEscolhido = m;
+        $$('#opcoes-motivo .opcao').forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        $('#campo-outros').hidden = false;
+        $('#confirmar-descarte').hidden = false;
+        $('#confirmar-descarte').disabled = !$('#txt-outros').value.trim();
+        $('#txt-outros').focus();
+      } else {
+        fecharCortinas();
+        decidir('descartado', m, '');
+      }
+    });
+  });
+  abrirCortina('cortina-motivos');
+}
+
+/* ═══════════════════════════════════════════════════ ligações */
+$$('.chip-tela').forEach(function(b){
+  b.addEventListener('click', function(){ fecharCortinas(); irPara(b.dataset.ir); });
+});
+
+$$('[data-modulo]').forEach(function(b){
+  b.addEventListener('click', function(){
+    E.indice = 0; E.foto = 0; E.estados = estadosNovos();
+    definirModulo(b.dataset.modulo);
+    if (b.dataset.retomar) {
+      [[0,'autuado'],[1,'descartado'],[2,'autuado'],[3,'descartado'],[4,'autuado'],[5,'descartado']]
+        .forEach(function(par, k){
+          var e = E.estados[par[0]];
+          e.decisao = par[1];
+          if (par[1] === 'autuado') e.sel = selecaoSugerida(TRANSITOS[par[0]]);
+          else e.motivo = MOTIVOS[k % 5];
+        });
+      E.indice = 6;
+      irPara('conferencia');
+    } else {
+      E.estados.forEach(function(e, i){ e.sel = selecaoSugerida(TRANSITOS[i]); });
+      irPara('carga');
+    }
+  });
+});
+
+$('#dropzone').addEventListener('click', function(){
+  $('#resumo-carga').hidden = false;
+  $('#dropzone').querySelector('.dz-titulo').textContent =
+    'TransactionSelectionReport_20260825.xlsx';
+  $('#dropzone').querySelector('.dz-sub').textContent = '9 trânsitos · 216 KB · lido sem erro';
+});
+$('#trocar-arquivo').addEventListener('click', function(){
+  $('#resumo-carga').hidden = true;
+  $('#dropzone').querySelector('.dz-titulo').textContent = 'Arraste o arquivo aqui';
+  $('#dropzone').querySelector('.dz-sub').textContent =
+    'ou clique para escolher — .xlsx exportado do Backoffice';
+});
+$('#iniciar-conferencia').addEventListener('click', function(){ irPara('conferencia'); });
+
+$('#ant').addEventListener('click', function(){
+  if (E.indice > 0) { E.indice--; E.foto = 0; desenharConferencia(); }
+});
+$('#prox').addEventListener('click', function(){
+  if (E.indice < TRANSITOS.length - 1) { E.indice++; E.foto = 0; desenharConferencia(); }
+});
+$('#ir-resumo').addEventListener('click', function(){ irPara('resumo'); });
+$('#voltar-conferencia').addEventListener('click', function(){ irPara('conferencia'); });
+
+$('#brilho').addEventListener('input', function(){ E.brilho = +this.value; desenharPalco(); });
+$('#contraste').addEventListener('input', function(){ E.contraste = +this.value; desenharPalco(); });
+$('#reset-img').addEventListener('click', function(){
+  E.brilho = 100; E.contraste = 100;
+  $('#brilho').value = 100; $('#contraste').value = 100;
+  desenharPalco();
+});
+
+$('#sel-padrao').addEventListener('click', function(){
+  estAtual().sel = selecaoSugerida(atual());
+  desenharTira(); desenharPalco(); desenharPrevia(); desenharNav();
+});
+$('#sel-limpar').addEventListener('click', function(){
+  estAtual().sel = [];
+  desenharTira(); desenharPalco(); desenharPrevia(); desenharNav();
+});
+
+$('#foto-ant').addEventListener('click', function(){ mudarFoto(-1); });
+$('#foto-prox').addEventListener('click', function(){ mudarFoto(1); });
+
+$('#ampliar').addEventListener('click', abrirLente);
+$('#btn-autuar').addEventListener('click', function(){
+  if (!this.disabled) decidir('autuado');
+});
+$('#btn-descartar').addEventListener('click', abrirMotivos);
+
+$('#txt-outros').addEventListener('input', function(){
+  $('#confirmar-descarte').disabled = !this.value.trim();
+});
+$('#confirmar-descarte').addEventListener('click', function(){
+  var txt = $('#txt-outros').value.trim();
+  if (!txt) return;
+  fecharCortinas();
+  decidir('descartado', MOTIVO_LIVRE, txt);
+});
+
+$('#gerar').addEventListener('click', function(){
+  var ok = 0, fotos = 0, paginas = 0;
+  E.estados.forEach(function(e, i){
+    if (e.decisao !== 'autuado') return;
+    var n = selecaoOrdenada(i).length;
+    ok++; fotos += n; paginas += Math.ceil(n / POR_PAGINA);
+  });
+  var av = $('#aviso-gerado');
+  av.hidden = false;
+  av.innerHTML = '<b>Remessa gerada.</b> ' + ok + ' laudo' + (ok > 1 ? 's' : '')
+    + ' em ' + paginas + ' página' + (paginas > 1 ? 's' : '') + ' A4, com ' + fotos
+    + ' fotos no total, mais o índice — compactados em <code>remessa.zip</code> em '
+    + esc($('#pasta').value) + '. A pasta foi aberta no Explorador.';
+});
+
+$$('[data-fecha]').forEach(function(b){ b.addEventListener('click', fecharCortinas); });
+$$('.cortina').forEach(function(c){
+  c.addEventListener('click', function(ev){ if (ev.target === c) fecharCortinas(); });
+});
+
+$('#btn-tema-app').addEventListener('click', function(){
+  var novo = $('#app').dataset.tema === 'claro' ? 'escuro' : 'claro';
+  $('#app').dataset.tema = novo;
+  this.textContent = 'Tema do app: ' + novo;
+});
+
+/* ─────────────────────────────────────────────────── teclado */
+document.addEventListener('keydown', function(ev){
+  if (ev.key === 'Escape') { fecharCortinas(); return; }
+  if (algumaCortina() || E.tela !== 'conferencia') return;
+
+  /* So a digitacao de texto rouba o teclado. Brilho e contraste sao
+     input[type=range]: se eles bloqueassem, mexer no brilho — justamente o que
+     se faz antes de olhar a proxima foto — matava todos os atalhos. */
+  var alvo = ev.target || document.body;
+  var tag = alvo.tagName || '';
+  var tipo = String(alvo.type || '').toLowerCase();
+  var textual = tag === 'TEXTAREA'
+    || (tag === 'INPUT' && ['text','search','url','email','password','number','tel']
+          .indexOf(tipo) >= 0);
+  if (textual) return;
+
+  /* Enter e Espaco pertencem ao controle que estiver com o foco, se houver */
+  var emControle = (tag === 'BUTTON' || tag === 'A');
+
+  var t = atual(), fotos = fotosOrdenadas(t);
+
+  if (ev.key === 'Enter') {
+    if (emControle) return;
+    ev.preventDefault();
+    if (!$('#btn-autuar').disabled) decidir('autuado');
+  }
+  else if (ev.key === 'Backspace') { ev.preventDefault(); abrirMotivos(); }
+  else if (ev.key === ' ') {
+    if (emControle) return;
+    ev.preventDefault();
+    if (fotos.length) alternarFoto(fotos[E.foto]);
+  }
+  /* ← → percorrem TODAS as fotos do trânsito, de todos os ângulos */
+  else if (ev.key === 'ArrowLeft')  { ev.preventDefault(); mudarFoto(-1); }
+  else if (ev.key === 'ArrowRight') { ev.preventDefault(); mudarFoto(1); }
+  /* ↑ ↓ trocam de ângulo */
+  else if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
+    ev.preventDefault();
+    if (!fotos.length) return;
+    var presentes = [];
+    fotos.forEach(function(c){ if (presentes.indexOf(c[0]) < 0) presentes.push(c[0]); });
+    var i = presentes.indexOf(fotos[E.foto][0]);
+    var passo = (ev.key === 'ArrowUp') ? -1 : 1;
+    irParaAngulo(presentes[(i + passo + presentes.length) % presentes.length]);
+  }
+  /* PgUp / PgDn trocam de trânsito */
+  else if (ev.key === 'PageUp')   { ev.preventDefault(); $('#ant').click(); }
+  else if (ev.key === 'PageDown') { ev.preventDefault(); $('#prox').click(); }
+  else if (ev.key === 'f' || ev.key === 'F') { ev.preventDefault(); abrirLente(); }
+  else if ('1234'.indexOf(ev.key) >= 0) {
+    ev.preventDefault();
+    irParaAngulo(ordemAngulos(t)[+ev.key - 1]);
+  }
+});
+
+/* ───────────────────────────────────────────────── arranque */
+definirModulo('contramao');
+E.estados.forEach(function(e, i){ e.sel = selecaoSugerida(TRANSITOS[i]); });
+irPara('modulos');
+</script>

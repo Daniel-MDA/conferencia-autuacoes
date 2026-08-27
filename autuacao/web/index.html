@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conferência de Autuações</title>
+<meta name="autuacao-token" content="__TOKEN_DA_SESSAO__">
+<link rel="stylesheet" href="/estatico/style.css">
+</head>
+<body>
+
+<header class="barra-topo">
+  <span class="marca">Conferência de Autuações<span id="versao"></span></span>
+  <span class="chip-modulo" id="chip-modulo" hidden>
+    <span class="marca-pista" id="marca-modulo"></span>
+    <span id="nome-modulo"></span>
+  </span>
+  <span class="arquivo" id="arquivo" hidden></span>
+  <span class="separa"></span>
+  <div class="contadores" id="contadores" hidden>
+    <span class="pill pill-ok"><b id="c-ok">0</b> autuados</span>
+    <span class="pill pill-no"><b id="c-no">0</b> descartados</span>
+    <span class="pill"><b id="c-pend">0</b> pendentes</span>
+    <span class="pill pill-busca" id="pill-imagens" hidden>
+      <span class="girando girando-mini"></span>
+      imagens <b id="c-img">0</b>/<b id="c-img-total">0</b>
+    </span>
+  </div>
+  <button class="btn btn-mini" id="btn-tema" title="Alternar claro/escuro">◐</button>
+  <button class="btn btn-mini" id="btn-trocar-modulo" hidden>Trocar módulo</button>
+  <button class="btn btn-mini" id="btn-finalizar" hidden>Finalizar sessão ›</button>
+</header>
+
+<!-- ═══════════════════════════ T1 · MÓDULOS ═══════════════════════════ -->
+<main class="tela centraliza" id="tela-modulos">
+  <div class="hub">
+    <h1>O que você vai analisar hoje?</h1>
+    <p class="sub">A escolha vale para a sessão inteira. A conferência é igual nos
+       dois módulos — o que muda é o título do relatório e a pasta da remessa.</p>
+    <div class="hub-cartoes" id="hub-cartoes"></div>
+    <div class="retomar" id="retomar" hidden></div>
+  </div>
+</main>
+
+<!-- ════════════════════════════ T2 · CARGA ════════════════════════════ -->
+<main class="tela centraliza" id="tela-carga">
+  <div class="carga">
+    <h1>Carregue a planilha do Backoffice</h1>
+    <p class="sub">Exporte o relatório de transações filtrado e arraste o arquivo
+       aqui. É a única forma de entrada de dados da aplicação.</p>
+
+    <button class="dropzone" id="dropzone">
+      <svg class="dz-icone" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+      </svg>
+      <span class="dz-titulo" id="dz-titulo">Arraste o arquivo aqui</span>
+      <span class="dz-sub" id="dz-sub">ou clique para escolher — .xlsx exportado do Backoffice</span>
+    </button>
+    <input type="file" id="arquivo-input" accept=".xlsx,.xlsm" hidden>
+
+    <div class="alerta alerta-erro" id="carga-erro" hidden></div>
+    <div class="carregando" id="carga-lendo" hidden>
+      <span class="girando"></span> Lendo a planilha…
+    </div>
+
+    <div class="resumo-carga" id="resumo-carga" hidden>
+      <h3>Planilha lida</h3>
+      <div class="rc-grade" id="rc-grade"></div>
+      <div class="alerta alerta-aviso" id="rc-aviso" hidden style="margin:12px 0 0"></div>
+      <div class="acoes-caixa">
+        <button class="btn-fantasma" id="trocar-arquivo">Trocar arquivo</button>
+        <button class="btn-primario" id="iniciar-conferencia">Iniciar conferência</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ════════════════════════ T3 · CONFERÊNCIA ══════════════════════════ -->
+<main class="tela" id="tela-conferencia">
+  <div class="trilha-env">
+    <div class="trilha" id="trilha" role="group" aria-label="Progresso da sessão"></div>
+    <div class="trilha-leg">
+      <span><i style="background:var(--ok)"></i> autuado</span>
+      <span><i style="background:var(--no)"></i> descartado</span>
+      <span><i style="background:var(--sinal)"></i> sem evidência</span>
+      <span><i style="background:var(--linha-forte)"></i> pendente</span>
+      <span class="separa"></span>
+      <span id="trilha-nota"></span>
+    </div>
+
+    <div class="barra-filtros">
+      <div class="filtros" id="filtros"></div>
+      <span class="separa"></span>
+      <label class="campo-busca">
+        <input type="search" id="busca" placeholder="Buscar placa ou ID"
+               autocomplete="off" spellcheck="false">
+      </label>
+      <label class="campo-ir">
+        ir para
+        <input type="number" id="ir-numero" min="1" placeholder="nº">
+      </label>
+      <span class="pos-lista" id="pos-lista"></span>
+    </div>
+  </div>
+
+  <div class="folha">
+    <div class="corpo">
+
+      <!-- ─────────────── coluna 1 · dados do trânsito ─────────────── -->
+      <aside class="painel-dados">
+        <div class="selos" id="selos"></div>
+        <div id="grade-dados"></div>
+      </aside>
+
+      <!-- ─────────────────── coluna 2 · as fotos ──────────────────── -->
+      <div class="area-foto">
+        <div class="nav-central">
+          <button class="btn" id="ant">‹ Anterior</button>
+          <span class="contador" id="contador">— / —</span>
+          <button class="btn" id="prox">Próximo ›</button>
+        </div>
+
+        <div class="visor">
+          <div class="abas" id="abas"></div>
+          <div class="palco" id="palco">
+            <button class="seta-foto seta-ant" id="foto-ant"
+                    title="Foto anterior (←)" aria-label="Foto anterior">‹</button>
+            <button class="seta-foto seta-prox" id="foto-prox"
+                    title="Próxima foto (→)" aria-label="Próxima foto">›</button>
+            <button class="seletor-foto" id="seletor-foto" hidden
+                    title="Incluir esta foto no relatório (Espaço)">
+              <span class="cx">✓</span><span class="txt">No relatório</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="controles">
+          <span class="pos-foto" id="pos-foto" hidden></span>
+          <label>Brilho <input type="range" id="brilho" min="60" max="180" value="100"></label>
+          <label>Contraste <input type="range" id="contraste" min="60" max="200" value="100"></label>
+          <button class="btn btn-mini" id="reset-img">Restaurar</button>
+          <button class="btn btn-mini" id="ampliar">Ampliar <kbd>F</kbd></button>
+          <button class="btn btn-mini" id="rebuscar" hidden>Tentar de novo</button>
+        </div>
+
+        <div class="tira">
+          <div class="tira-cab">
+            <h3>Fotos do trânsito</h3>
+            <span class="conta" id="conta-sel">—</span>
+            <span class="separa"></span>
+            <button class="btn btn-mini" id="sel-sugerida">Sugerida</button>
+            <button class="btn btn-mini" id="sel-limpar">Limpar</button>
+          </div>
+          <div class="tira-lista" id="tira-lista"></div>
+        </div>
+      </div>
+
+      <!-- ──────────── coluna 3 · prévia do relatório ──────────── -->
+      <aside class="previa-lado">
+        <div class="previa-cab">
+          <h3>Prévia do relatório</h3>
+          <span class="separa"></span>
+          <span class="tag-pag" id="tag-pag"></span>
+        </div>
+        <div class="previa-rolagem" id="previa-rolagem"></div>
+      </aside>
+
+    </div>
+  </div>
+
+  <div class="acoes">
+    <div class="atalhos">
+      <kbd>Enter</kbd> autuar · <kbd>Backspace</kbd> descartar ·
+      <kbd>Espaço</kbd> incluir foto · <kbd>←</kbd><kbd>→</kbd> foto ·
+      <kbd>↑</kbd><kbd>↓</kbd> ou <kbd>1</kbd>–<kbd>4</kbd> ângulo ·
+      <kbd>PgUp</kbd><kbd>PgDn</kbd> trânsito · <kbd>F</kbd> ampliar
+    </div>
+    <div class="acoes-dir">
+      <span class="aviso-bloqueio" id="aviso-bloqueio" hidden></span>
+      <button class="btn-dec btn-no" id="btn-descartar">Descartar <kbd>⌫</kbd></button>
+      <button class="btn-dec btn-ok" id="btn-autuar">Autuar <kbd>⏎</kbd></button>
+    </div>
+  </div>
+</main>
+
+<!-- ═══════════════════════════ T4 · RESUMO ════════════════════════════ -->
+<main class="tela centraliza" id="tela-resumo">
+  <div class="resumo">
+    <h1>Resumo da sessão</h1>
+    <p class="sub" id="resumo-sub"></p>
+
+    <div class="numeros">
+      <div class="num num-ok"><b id="r-ok">0</b><span>autuados, viram relatório</span></div>
+      <div class="num num-no"><b id="r-no">0</b><span>descartados</span></div>
+      <div class="num num-sem"><b id="r-sem">0</b><span>sem evidência</span></div>
+      <div class="num"><b id="r-pend">0</b><span>sem decisão</span></div>
+    </div>
+
+    <div class="alerta alerta-aviso" id="aviso-pendentes" hidden></div>
+    <div class="alerta alerta-ok" id="aviso-gerado" hidden></div>
+    <div class="alerta alerta-erro" id="erro-remessa" hidden></div>
+
+    <div class="painel">
+      <h3>Descartes por motivo</h3>
+      <div class="motivos" id="motivos"></div>
+    </div>
+
+    <div class="campo-linha">
+      <label for="pasta">Pasta da remessa — sai compactada em .zip para o e-mail</label>
+      <input type="text" class="entrada" id="pasta" spellcheck="false">
+    </div>
+
+    <div class="resumo-acoes">
+      <button class="btn-fantasma" id="voltar-conferencia">‹ Voltar à conferência</button>
+      <span style="flex:1"></span>
+      <button class="btn-fantasma" id="abrir-pasta" hidden>Abrir a pasta</button>
+      <button class="btn-primario" id="gerar">Gerar remessa</button>
+      <button class="btn-primario" id="ir-inicio" hidden>Página inicial ›</button>
+    </div>
+    <p class="nota-gerar" id="nota-gerar" hidden></p>
+  </div>
+</main>
+
+<!-- ═════════════════════ sobreposição · motivos ═══════════════════════ -->
+<div class="cortina" id="cortina-motivos">
+  <div class="caixa c-media">
+    <h2>Por que descartar?</h2>
+    <p class="sub">O motivo entra na trilha de auditoria e no resumo da sessão.
+       Não sai no relatório.</p>
+    <div class="opcoes" id="opcoes-motivo"></div>
+    <div class="campo-outros" id="campo-outros" hidden>
+      <label for="txt-outros">Descreva o motivo — obrigatório</label>
+      <textarea id="txt-outros" placeholder="O que aconteceu neste trânsito?"></textarea>
+    </div>
+    <div class="acoes-caixa">
+      <button class="btn-fantasma" data-fecha="1">Cancelar</button>
+      <button class="btn-primario" id="confirmar-descarte" hidden disabled>Confirmar descarte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════════════ sobreposição · pergunta ══════════════════════ -->
+<div class="cortina" id="cortina-pergunta">
+  <div class="caixa c-media">
+    <h2 id="pergunta-titulo"></h2>
+    <p class="sub" id="pergunta-texto"></p>
+    <div class="acoes-caixa">
+      <button class="btn-fantasma" id="pergunta-nao">Cancelar</button>
+      <button class="btn-primario" id="pergunta-sim">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ sobreposição · ampliação ══════════════════════ -->
+<div class="cortina" id="cortina-lente">
+  <div class="lente">
+    <div class="lente-palco" id="lente-palco"></div>
+    <div class="lente-pe">
+      <span id="lente-legenda"></span>
+      <span class="separa"></span>
+      <span>rolar = zoom · arrastar = mover · duplo clique = ajustar</span>
+      <button class="btn btn-mini" id="lente-marcar">Incluir no relatório <kbd>Espaço</kbd></button>
+      <button class="btn btn-mini" data-fecha="1">Fechar <kbd>Esc</kbd></button>
+    </div>
+  </div>
+</div>
+
+<script src="/estatico/app.js"></script>
+</body>
+</html>

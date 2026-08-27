@@ -1,0 +1,1806 @@
+<title>Requisitos Conferência de Autuações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+/* ===================================================================
+   Paleta: asfalto + sinalizacao horizontal.
+   O cinza e frio de proposito (asfalto); o amarelo e a tinta pintada
+   sobre ele. O contraste entre os dois e o proprio assunto.
+   =================================================================== */
+:root{
+  --papel:#f6f7f8;
+  --superficie:#ffffff;
+  --superficie-2:#eceff1;
+  --linha:#d6dade;
+  --linha-forte:#b4bbc1;
+  --tinta:#12171b;
+  --tinta-2:#39424a;
+  --suave:#6b757d;
+  --sinal:#c98a00;
+  --sinal-tinta:#8a5f00;
+  --sinal-fundo:#fdf3de;
+  --verde:#186b3d;
+  --verde-fundo:#e4f1e9;
+  --vermelho:#a92e2c;
+  --vermelho-fundo:#fbe9e8;
+  --sombra:0 1px 2px rgba(18,23,27,.06), 0 10px 26px -18px rgba(18,23,27,.3);
+  --raio:6px;
+  --display:"Barlow Condensed","Segoe UI",sans-serif;
+  --ui:"Barlow","Segoe UI",Tahoma,sans-serif;
+  --prosa:"Spectral",Georgia,serif;
+  --mono:"IBM Plex Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --papel:#0f1418;
+    --superficie:#161c21;
+    --superficie-2:#1e252b;
+    --linha:#28313a;
+    --linha-forte:#3d4852;
+    --tinta:#e7eaec;
+    --tinta-2:#b7bfc6;
+    --suave:#8b959d;
+    --sinal:#f2b134;
+    --sinal-tinta:#f2b134;
+    --sinal-fundo:#2b2113;
+    --verde:#52c684;
+    --verde-fundo:#132619;
+    --vermelho:#ea736c;
+    --vermelho-fundo:#2b1615;
+    --sombra:0 1px 2px rgba(0,0,0,.45), 0 10px 26px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --papel:#0f1418;
+  --superficie:#161c21;
+  --superficie-2:#1e252b;
+  --linha:#28313a;
+  --linha-forte:#3d4852;
+  --tinta:#e7eaec;
+  --tinta-2:#b7bfc6;
+  --suave:#8b959d;
+  --sinal:#f2b134;
+  --sinal-tinta:#f2b134;
+  --sinal-fundo:#2b2113;
+  --verde:#52c684;
+  --verde-fundo:#132619;
+  --vermelho:#ea736c;
+  --vermelho-fundo:#2b1615;
+  --sombra:0 1px 2px rgba(0,0,0,.45), 0 10px 26px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--papel);color:var(--tinta);
+  font-family:var(--ui);font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ------------------------------------------------------------ shell -- */
+.shell{display:grid;grid-template-columns:252px minmax(0,1fr);
+       max-width:1260px;margin:0 auto}
+.rail{
+  position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto;
+  padding:34px 22px 40px;border-right:1px solid var(--linha);
+  display:flex;flex-direction:column;gap:22px;
+}
+.rail-marca{display:flex;flex-direction:column;gap:3px}
+.rail-marca b{font-family:var(--display);font-size:22px;font-weight:700;line-height:1.05}
+.rail-marca span{font-size:12.5px;color:var(--suave)}
+.rail nav{display:flex;flex-direction:column;gap:1px}
+.rail nav a{
+  display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:baseline;
+  padding:5px 8px;border-radius:4px;text-decoration:none;color:var(--tinta-2);
+  font-size:13.5px;line-height:1.3;transition:background .12s,color .12s;
+}
+.rail nav a i{font-family:var(--mono);font-size:10.5px;color:var(--suave);
+              font-style:normal;font-variant-numeric:tabular-nums}
+.rail nav a:hover{background:var(--superficie-2);color:var(--tinta)}
+.rail nav a.ativo{background:var(--sinal-fundo);color:var(--sinal-tinta);font-weight:600}
+.rail nav a.ativo i{color:var(--sinal-tinta)}
+.conteudo{padding:34px 46px 120px;min-width:0}
+
+/* --------------------------------------------------------- cabecalho -- */
+.capa{border-bottom:3px solid var(--tinta);padding-bottom:26px}
+.faixa-sinal{height:6px;width:130px;margin-bottom:20px;
+  background:repeating-linear-gradient(90deg,var(--sinal) 0 28px,transparent 28px 42px)}
+.capa h1{
+  font-family:var(--display);font-weight:700;font-size:clamp(34px,5.2vw,54px);
+  line-height:1.02;margin:0 0 12px;text-wrap:balance;
+}
+.capa p{font-family:var(--prosa);font-size:18px;color:var(--tinta-2);
+        max-width:60ch;margin:0}
+.capa-meta{display:flex;flex-wrap:wrap;gap:6px 28px;margin-top:24px;
+           font-size:12.5px;color:var(--suave)}
+.capa-meta b{color:var(--tinta-2);font-weight:600}
+
+/* ----------------------------------------------------------- secoes -- */
+section{padding-top:58px;scroll-margin-top:18px}
+.eyebrow{
+  font-family:var(--display);font-weight:600;font-size:12px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--sinal-tinta);
+  display:flex;align-items:center;gap:9px;margin-bottom:8px;
+}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--sinal)}
+h2{font-family:var(--display);font-weight:700;font-size:32px;line-height:1.08;
+   margin:0 0 16px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:20px;line-height:1.15;
+   margin:36px 0 10px}
+h4{font-family:var(--ui);font-weight:600;font-size:14px;margin:24px 0 7px;
+   letter-spacing:.01em}
+.prosa{font-family:var(--prosa);font-size:17px;line-height:1.62;
+       color:var(--tinta-2);max-width:66ch;margin:0}
+.prosa + .prosa{margin-top:14px}
+.prosa strong{color:var(--tinta);font-weight:600}
+ul.lista{font-family:var(--prosa);font-size:17px;line-height:1.6;color:var(--tinta-2);
+     max-width:66ch;padding-left:0;list-style:none;display:flex;
+     flex-direction:column;gap:9px;margin:16px 0}
+ul.lista li{position:relative;padding-left:20px}
+ul.lista li::before{content:"";position:absolute;left:2px;top:.62em;
+  width:8px;height:2px;background:var(--sinal)}
+ul.lista li strong{color:var(--tinta);font-weight:600}
+code{font-family:var(--mono);font-size:.86em;background:var(--superficie-2);
+     padding:1px 5px;border-radius:3px;color:var(--tinta)}
+
+/* ---------------------------------------------------------- tabelas -- */
+.rolagem{overflow-x:auto;margin:20px 0;border:1px solid var(--linha);
+         border-radius:var(--raio);background:var(--superficie)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;
+      font-variant-numeric:tabular-nums}
+th{
+  font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--suave);text-align:left;
+  padding:10px 14px;border-bottom:1px solid var(--linha-forte);
+  background:var(--superficie-2);white-space:nowrap;
+}
+td{padding:9px 14px;border-bottom:1px solid var(--linha);
+   vertical-align:top;color:var(--tinta-2);line-height:1.45}
+tbody tr:last-child td{border-bottom:none}
+td strong{color:var(--tinta);font-weight:600}
+.id{font-family:var(--mono);font-size:11.5px;font-weight:500;
+    color:var(--sinal-tinta);white-space:nowrap}
+.estreita{width:1%;white-space:nowrap}
+
+.tag{display:inline-block;font-family:var(--ui);font-size:11px;font-weight:600;
+     letter-spacing:.03em;padding:2px 8px;border-radius:99px;white-space:nowrap;
+     border:1px solid currentColor}
+.tag-ob{background:var(--vermelho-fundo);color:var(--vermelho)}
+.tag-im{background:var(--sinal-fundo);color:var(--sinal-tinta)}
+.tag-de{background:var(--superficie-2);color:var(--suave);border-color:var(--linha-forte)}
+.tag-novo{background:var(--verde-fundo);color:var(--verde)}
+
+/* ------------------------------------------------------------ notas -- */
+.nota{
+  border-left:3px solid var(--sinal);background:var(--sinal-fundo);
+  padding:14px 18px;border-radius:0 var(--raio) var(--raio) 0;margin:22px 0;
+  font-size:14.5px;line-height:1.55;color:var(--tinta-2);max-width:72ch;
+}
+.nota b{color:var(--tinta);font-weight:600}
+.nota-alerta{border-left-color:var(--vermelho);background:var(--vermelho-fundo)}
+
+/* ---------------------------------------------------------- cartoes -- */
+.cartoes{display:grid;gap:14px;margin:22px 0;
+         grid-template-columns:repeat(auto-fit,minmax(228px,1fr))}
+.cartao{background:var(--superficie);border:1px solid var(--linha);
+        border-radius:var(--raio);padding:16px 17px;box-shadow:var(--sombra)}
+.cartao h5{font-family:var(--display);font-weight:600;font-size:16px;margin:0 0 6px}
+.cartao p{margin:0;font-size:13.5px;color:var(--suave);line-height:1.5}
+.cartao .id{display:block;margin-bottom:7px}
+
+/* ------------------------------------- marcacao horizontal da rodovia -- */
+.modulos{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(282px,1fr));
+         margin:24px 0}
+.modulo{background:var(--superficie);border:1px solid var(--linha);
+        border-radius:var(--raio);overflow:hidden;box-shadow:var(--sombra)}
+.modulo-pista{height:50px;background:#333a40;position:relative}
+.modulo-pista::before,.modulo-pista::after{content:"";position:absolute;left:0;right:0}
+.pista-contramao::before{top:22px;height:2px;background:#f2b134}
+.pista-contramao::after{top:28px;height:2px;background:#f2b134}
+.pista-acostamento::before{top:24px;height:2px;background:#eef1f3}
+.pista-acostamento::after{top:30px;bottom:0;
+  background:repeating-linear-gradient(115deg,#eef1f3 0 1px,transparent 1px 11px);opacity:.45}
+.modulo-corpo{padding:15px 17px}
+.modulo-corpo h5{font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 5px}
+.modulo-corpo p{margin:0;font-size:13.5px;color:var(--suave);line-height:1.5}
+
+/* ------------------------------------------------------------ fluxo -- */
+.fluxo{display:flex;margin:24px 0 10px;overflow-x:auto;padding-bottom:6px}
+.passo{
+  flex:1 1 0;min-width:138px;background:var(--superficie);
+  border:1px solid var(--linha);border-radius:var(--raio);
+  padding:13px 14px;position:relative;margin-right:22px;
+}
+.passo:last-child{margin-right:0}
+.passo::after{content:"";position:absolute;right:-17px;top:50%;width:12px;height:2px;
+  background:var(--linha-forte)}
+.passo:last-child::after{display:none}
+.passo i{font-family:var(--mono);font-style:normal;font-size:10.5px;
+         color:var(--suave);display:block;margin-bottom:5px}
+.passo b{font-family:var(--display);font-weight:600;font-size:15px;
+         display:block;line-height:1.15;margin-bottom:4px}
+.passo span{font-size:12.5px;color:var(--suave);line-height:1.4;display:block}
+.passo-auto{border-color:var(--sinal);background:var(--sinal-fundo)}
+.passo-auto i{color:var(--sinal-tinta)}
+.legenda-fluxo{display:flex;gap:20px;font-size:12.5px;color:var(--suave);flex-wrap:wrap}
+.legenda-fluxo span{display:inline-flex;align-items:center;gap:6px}
+.legenda-fluxo em{width:11px;height:11px;border-radius:3px;border:1px solid var(--linha);
+                  display:inline-block}
+.legenda-fluxo .e-auto{background:var(--sinal-fundo);border-color:var(--sinal)}
+.legenda-fluxo .e-man{background:var(--superficie)}
+
+/* ------------------------------------------------------------ pilha -- */
+.pilha{display:flex;flex-direction:column;gap:6px;margin:22px 0;max-width:660px}
+.camada{display:grid;grid-template-columns:158px 1fr;gap:16px;align-items:center;
+  background:var(--superficie);border:1px solid var(--linha);
+  border-radius:var(--raio);padding:12px 16px}
+.camada b{font-family:var(--display);font-weight:600;font-size:15px}
+.camada span{font-size:13px;color:var(--suave);line-height:1.45}
+.camada-destaque{border-color:var(--sinal);background:var(--sinal-fundo)}
+
+/* ------------------------------------------------- maquete do laudo -- */
+.maquete{background:var(--superficie);border:1px solid var(--linha-forte);
+  border-radius:var(--raio);padding:16px;max-width:420px;margin:22px 0;
+  box-shadow:var(--sombra)}
+.mq-cabecalho{border:1px solid var(--linha-forte);display:flex;align-items:center;
+  gap:10px;padding:9px 11px;margin-bottom:9px}
+.mq-logo{width:54px;height:19px;border:1px dashed var(--linha-forte);border-radius:2px;
+  font-size:8px;color:var(--suave);display:flex;align-items:center;justify-content:center}
+.mq-titulo{flex:1;text-align:center;font-family:var(--display);font-weight:700;
+  font-size:12px;letter-spacing:.06em}
+.mq-linha{height:5px;background:var(--superficie-2);border-radius:2px;margin-bottom:5px}
+.mq-linha.curta{width:44%}
+.mq-rotulo{font-family:var(--display);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--suave);margin:10px 0 5px}
+.mq-grade-dados{display:grid;grid-template-columns:repeat(3,1fr);gap:5px 10px;margin-bottom:12px}
+.mq-campo{display:flex;flex-direction:column;gap:2px}
+.mq-campo em{height:4px;width:56%;background:var(--superficie-2);border-radius:2px}
+.mq-campo i{height:5px;width:82%;background:var(--linha);border-radius:2px}
+.mq-fotos{display:grid;gap:5px}
+.mq-foto{background:#242b31;border-radius:2px;position:relative;overflow:hidden}
+.mq-foto::after{content:attr(data-cam);position:absolute;left:5px;bottom:3px;
+  font-family:var(--mono);font-size:7px;color:#9fb0bd}
+.mq-rodape{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+
+.grade-maquetes{display:grid;gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(184px,1fr));margin:22px 0}
+.mini{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio);
+      padding:12px;box-shadow:var(--sombra)}
+.mini-topo{height:13px;border:1px solid var(--linha-forte);margin-bottom:6px}
+.mini-fotos{display:grid;gap:4px}
+.mini-fotos div{background:#242b31;border-radius:2px}
+.mini b{display:block;font-family:var(--display);font-weight:600;font-size:13.5px;margin-top:10px}
+.mini span{font-size:11.5px;color:var(--suave);line-height:1.4}
+
+/* --------------------------------------- laudo A4: fotos 4:3, 2 paginas -- */
+.paginas{display:grid;gap:20px;margin:22px 0;align-items:start;
+  grid-template-columns:repeat(auto-fit,minmax(236px,1fr))}
+.folha-a4{background:var(--superficie);border:1px solid var(--linha-forte);
+  border-radius:4px;padding:13px;box-shadow:var(--sombra);position:relative}
+.selo-pag{position:absolute;top:-10px;right:12px;background:var(--sinal);color:#1c1305;
+  font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 9px;border-radius:99px}
+.mq-43{aspect-ratio:4/3;background:#242b31;border-radius:2px;position:relative;
+  overflow:hidden}
+.mq-43::after{content:attr(data-cam);position:absolute;left:5px;bottom:4px;
+  font-family:var(--mono);font-size:7px;color:#9fb0bd}
+.mq-cel{display:flex;flex-direction:column;gap:2px}
+.mq-cel span{font-family:var(--mono);font-size:6.5px;color:var(--suave);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mq-decl{margin-top:11px;padding-top:7px;border-top:1px solid var(--linha);
+  font-size:7.5px;color:var(--suave);line-height:1.55}
+.mq-decl b{color:var(--tinta-2);font-weight:600}
+.mq-dados3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 10px;margin-bottom:11px}
+
+/* ------------------------------------------ esqueleto da tela de conferencia */
+.esqueleto{border:1px solid var(--linha-forte);border-radius:var(--raio);
+  overflow:hidden;background:var(--superficie);margin:22px 0;box-shadow:var(--sombra)}
+.esq-faixa{padding:7px 11px;border-bottom:1px solid var(--linha);
+  background:var(--superficie-2);font-family:var(--display);font-size:11px;
+  font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--suave)}
+.esq-corpo{display:grid;grid-template-columns:2fr 1fr;min-height:190px}
+.esq-corpo.esq-tres{grid-template-columns:1fr 2fr 1fr}
+.esq-tres .esq-col + .esq-col{border-left:1px solid var(--linha);background:none}
+.esq-tres .esq-col:last-child{border-left:2px dashed var(--sinal);
+  background:var(--sinal-fundo)}
+.esq-seletor{position:absolute;top:8px;right:8px;background:var(--verde);color:#fff;
+  border-radius:99px;padding:2px 9px;font-size:10px;font-weight:600;
+  font-family:var(--ui)}
+.esq-foto{position:relative}
+.esq-col{padding:11px 13px;display:flex;flex-direction:column;gap:8px}
+.esq-col + .esq-col{border-left:2px dashed var(--sinal);background:var(--sinal-fundo)}
+.esq-rot{font-family:var(--display);font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--suave)}
+.esq-cx{border:1px solid var(--linha-forte);border-radius:4px;padding:8px;
+  font-size:12px;color:var(--tinta-2);background:var(--superficie);line-height:1.45}
+.esq-cx b{color:var(--tinta);font-weight:600;display:block;font-family:var(--display);
+  font-size:13.5px;margin-bottom:2px}
+.esq-centro{text-align:center}
+.esq-foto{aspect-ratio:4/3;background:#242b31;border-radius:3px;display:flex;
+  align-items:center;justify-content:center;color:#8b98a3;font-family:var(--mono);
+  font-size:10.5px}
+.esq-tira{display:flex;gap:4px}
+.esq-tira i{flex:1;aspect-ratio:4/3;background:#242b31;border-radius:2px;
+  border:2px solid transparent}
+.esq-tira i.marcada{border-color:var(--verde)}
+
+/* ------------------------------------------------------------- misc -- */
+.rodape{margin-top:74px;padding-top:22px;border-top:3px solid var(--tinta);
+        font-size:13px;color:var(--suave);max-width:66ch;line-height:1.6}
+a{color:var(--sinal-tinta)}
+:focus-visible{outline:2px solid var(--sinal);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:940px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;max-height:none;border-right:none;
+        border-bottom:1px solid var(--linha);padding:24px 22px}
+  .rail nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}
+  .conteudo{padding:26px 22px 90px}
+}
+</style>
+
+<div class="shell">
+
+<aside class="rail">
+  <div class="rail-marca">
+    <b>Conferência<br>de Autuações</b>
+    <span>Caderno de requisitos · v2.0</span>
+  </div>
+  <nav id="nav">
+    <a href="#s1"><i>01</i><span>Contexto e problema</span></a>
+    <a href="#s2"><i>02</i><span>Objetivo e escopo</span></a>
+    <a href="#s3"><i>03</i><span>Atores</span></a>
+    <a href="#s4"><i>04</i><span>Os dois módulos</span></a>
+    <a href="#s5"><i>05</i><span>Fluxo alvo</span></a>
+    <a href="#s6"><i>06</i><span>Regras de negócio</span></a>
+    <a href="#s7"><i>07</i><span>Requisitos funcionais</span></a>
+    <a href="#s8"><i>08</i><span>Requisitos não funcionais</span></a>
+    <a href="#s9"><i>09</i><span>Modelo de dados</span></a>
+    <a href="#s10"><i>10</i><span>Mapa de telas</span></a>
+    <a href="#s11"><i>11</i><span>O laudo em PDF</span></a>
+    <a href="#s12"><i>12</i><span>Arquitetura</span></a>
+    <a href="#s13"><i>13</i><span>Riscos e pendências</span></a>
+    <a href="#s14"><i>14</i><span>Roteiro de entrega</span></a>
+    <a href="#s15"><i>15</i><span>Glossário</span></a>
+  </nav>
+</aside>
+
+<main class="conteudo">
+
+<header class="capa">
+  <div class="faixa-sinal"></div>
+  <h1>Conferência de Autuações Free Flow</h1>
+  <p>Levantamento de requisitos e prototipagem da aplicação desktop que substitui
+     a macro de Excel na análise de trânsitos em contramão e no acostamento da
+     BR-000, até a remessa dos laudos à PRF local.</p>
+  <div class="nota" style="margin-top:20px">
+    <b>Revisão 2.1.</b> Ângulos de câmera corrigidos (P é panorâmica, não placa), módulos
+    unificados na mecânica, laudo enxugado para evidência pura, tela de configuração
+    removida, prévia embutida na conferência e atalhos remapeados. A regra da pasta das
+    imagens (<span class="id">Q-07</span>) foi <b>resolvida por análise do relatório de
+    25/08</b> — ver <a href="#s9">seção 09</a>.
+  </div>
+  <div class="capa-meta">
+    <span><b>Versão</b> 2.1 — revisada</span>
+    <span><b>Data</b> 25/08/2026</span>
+    <span><b>Substitui</b> protótipo 1.0 (Flask + navegador)</span>
+    <span><b>Amostra analisada</b> 3.419 trânsitos, REF-000, 25/08</span>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════ 01 ═══ -->
+<section id="s1">
+  <div class="eyebrow">Seção 01</div>
+  <h2>Contexto e problema</h2>
+
+  <p class="prosa">A concessionária opera pedágio <em>free flow</em> na BR-000: os
+     pórticos registram cada passagem sem cancela, e o Backoffice guarda a transação
+     junto com as imagens das câmeras. Parte dessas passagens revela infrações de
+     trânsito — veículos na contramão e veículos trafegando pelo acostamento. Essas
+     ocorrências não são autuadas pela concessionária: elas são documentadas e
+     encaminhadas à Polícia Rodoviária Federal local, que decide sobre a autuação.</p>
+
+  <p class="prosa">Hoje esse trabalho é feito por uma macro de Excel. O operador
+     exporta o relatório de trânsitos suspeitos, a macro despeja todas as fotos na
+     planilha, o operador de qualidade apaga as linhas que não serão encaminhadas e
+     a macro gera um PDF por trânsito restante. O coordenador junta os arquivos e
+     envia.</p>
+
+  <h3>Onde o processo atual dói</h3>
+  <ul class="lista">
+    <li><strong>Baixa tudo antes de decidir qualquer coisa.</strong> As fotos de todos
+        os trânsitos são carregadas de uma vez, inclusive as dos que serão descartados
+        segundos depois. Em relatórios grandes o Excel fica pesado e às vezes trava.</li>
+    <li><strong>Ninguém escolhe as fotos.</strong> Tudo o que foi baixado entra no PDF.
+        O laudo sai com imagens redundantes, empilhadas uma sob a outra, gastando três
+        ou quatro páginas para provar o que uma página resolveria.</li>
+    <li><strong>Não há registro de quem decidiu o quê.</strong> A planilha é apagada
+        durante o próprio trabalho; ao final não existe trilha de quem manteve, quem
+        descartou e por quê.</li>
+    <li><strong>Um fluxo só para dois problemas diferentes.</strong> Contramão e
+        acostamento têm evidências, critérios e enquadramento distintos, mas passam
+        pelo mesmo caminho e saem no mesmo formato.</li>
+    <li><strong>Depende do Excel com macros habilitadas.</strong> Política de segurança,
+        atualização do Office ou troca de máquina quebram o processo.</li>
+  </ul>
+
+  <div class="nota">
+    <b>O que já existe.</b> Há um protótipo funcional (versão 1.0) que cobre a leitura
+    da planilha, o download das imagens F/L/T/P, a tela de conferência e a geração do
+    PDF no modelo <em>Comprovação de Transação</em>. Ele resolveu as duas incertezas
+    mais caras do domínio — como localizar o cabeçalho da planilha e como montar o
+    caminho das fotos no servidor. Este caderno parte dele: mantém o que foi validado
+    e especifica o que falta.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 02 ═══ -->
+<section id="s2">
+  <div class="eyebrow">Seção 02</div>
+  <h2>Objetivo e escopo</h2>
+
+  <p class="prosa">Entregar um <strong>aplicativo desktop único</strong>, que roda em
+     qualquer máquina Windows da concessionária sem exigir Python, Excel ou instalação
+     administrativa, e que conduz o operador do relatório do Backoffice até a pasta de
+     laudos pronta para envio à PRF — com <strong>duas atividades separadas</strong> e
+     com <strong>o operador escolhendo quais fotos compõem cada laudo</strong>.</p>
+
+  <h3>Dentro do escopo</h3>
+  <ul class="lista">
+    <li>Os dois módulos de análise: <strong>contramão</strong> e <strong>acostamento</strong>.</li>
+    <li>Carga do relatório padrão do Backoffice em <code>.xlsx</code> — única forma de
+        entrada de dados.</li>
+    <li>Descoberta e download das imagens no servidor de fotos, sob demanda.</li>
+    <li>Tela de conferência com o mesmo arranjo de informação do protótipo, refeita
+        num visual mais limpo.</li>
+    <li>Seleção das fotos que integram o laudo, com prévia sempre visível ao lado.</li>
+    <li>Geração de um PDF por trânsito autuado, com cabeçalho fixo e grade automática
+        de fotos.</li>
+    <li>Montagem da pasta de remessa: laudos, índice e resumo da sessão.</li>
+    <li>Trilha de auditoria local das decisões.</li>
+  </ul>
+
+  <h3>Fora do escopo desta versão</h3>
+  <ul class="lista">
+    <li><strong>Envio automático à PRF.</strong> A aplicação deixa a remessa pronta; o
+        envio continua sendo ato do coordenador.</li>
+    <li><strong>Integração direta com a API do Backoffice.</strong> A entrada é sempre
+        a planilha exportada.</li>
+    <li><strong>Decisão sobre o enquadramento legal.</strong> A aplicação imprime o
+        texto configurado; a tipificação é da PRF.</li>
+    <li><strong>Detecção automática da infração.</strong> Nenhuma visão computacional:
+        quem decide é o operador.</li>
+    <li><strong>Operação multiusuário ou em rede.</strong> A instalação é local e de um
+        operador por vez.</li>
+    <li><strong>Tela de configuração.</strong> Os parâmetros ficam no código-fonte e são
+        alterados por quem mantém a aplicação (<span class="id">RN-18</span>).</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 03 ═══ -->
+<section id="s3">
+  <div class="eyebrow">Seção 03</div>
+  <h2>Atores</h2>
+
+  <div class="cartoes">
+    <div class="cartao">
+      <span class="id">ATOR-01</span>
+      <h5>Operador de triagem</h5>
+      <p>Exporta o relatório de trânsitos suspeitos no Backoffice e abre a sessão na
+         aplicação. Faz a primeira passada, marcando o óbvio.</p>
+    </div>
+    <div class="cartao">
+      <span class="id">ATOR-02</span>
+      <h5>Operador de qualidade</h5>
+      <p>Confere trânsito a trânsito, escolhe as fotos que provam a infração, decide
+         autuar ou descartar e escreve o comentário que sai no laudo.</p>
+    </div>
+    <div class="cartao">
+      <span class="id">ATOR-03</span>
+      <h5>Coordenador</h5>
+      <p>Revisa o resumo da sessão, gera a remessa e a encaminha à PRF local.
+         É quem responde pelo que foi enviado.</p>
+    </div>
+    <div class="cartao">
+      <span class="id">SIST-01</span>
+      <h5>Backoffice free flow</h5>
+      <p>Origem do relatório <code>.xlsx</code>. Sistema externo, somente leitura,
+         sem integração automática nesta versão.</p>
+    </div>
+    <div class="cartao">
+      <span class="id">SIST-02</span>
+      <h5>Servidor de imagens</h5>
+      <p>Guarda as capturas das câmeras por data, pista e transação. Acessado por
+         HTTP dentro da rede, normalmente via VPN.</p>
+    </div>
+    <div class="cartao">
+      <span class="id">DEST-01</span>
+      <h5>PRF local</h5>
+      <p>Destinatária dos laudos. Define, na prática, o que precisa constar na
+         evidência para que a ocorrência seja aproveitável.</p>
+    </div>
+  </div>
+
+  <p class="prosa">Na prática, uma mesma pessoa costuma acumular os papéis ATOR-01 e
+     ATOR-02. A aplicação não faz controle de acesso: ela registra o usuário do Windows
+     em cada decisão, o que basta para a trilha de auditoria interna.</p>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 04 ═══ -->
+<section id="s4">
+  <div class="eyebrow">Seção 04</div>
+  <h2>Os dois módulos</h2>
+
+  <p class="prosa">O relatório exportado do Backoffice é o mesmo nos dois casos, e
+     <strong>o operador escolhe a atividade ao abrir a sessão</strong>. A mecânica da
+     conferência é idêntica nos dois módulos: os mesmos ângulos, a mesma seleção de
+     fotos, a mesma lista de motivos de descarte. O que a escolha define é o
+     <strong>título do laudo</strong> e a <strong>pasta da remessa</strong>.</p>
+
+  <div class="modulos">
+    <div class="modulo">
+      <div class="modulo-pista pista-contramao"></div>
+      <div class="modulo-corpo">
+        <h5>Análise de contramão</h5>
+        <p>Veículo trafegando no sentido oposto ao da faixa.<br>
+           Laudo: <em>Comprovação de Trânsito - Contramão</em>.</p>
+      </div>
+    </div>
+    <div class="modulo">
+      <div class="modulo-pista pista-acostamento"></div>
+      <div class="modulo-corpo">
+        <h5>Análise de acostamento</h5>
+        <p>Veículo trafegando sobre o acostamento, fora das faixas de rolamento.<br>
+           Laudo: <em>Comprovação de Trânsito - Acostamento</em>.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Os ângulos de câmera</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Letra</th><th>Ângulo</th><th>O que prova</th><th class="estreita">Papel</th></tr></thead>
+    <tbody>
+      <tr><td class="id">F</td><td><strong>Frontal</strong></td>
+          <td>Enquadra a dianteira do veículo — é onde a placa é lida.</td>
+          <td><span class="tag tag-ob">essencial</span></td></tr>
+      <tr><td class="id">P</td><td><strong>Panorâmica</strong></td>
+          <td>Abre o quadro para a pista inteira — mostra em que faixa o veículo está.</td>
+          <td><span class="tag tag-ob">essencial</span></td></tr>
+      <tr><td class="id">L</td><td><strong>Lateral</strong></td>
+          <td>Perfil do veículo. Complementa quando o enquadramento frontal ficou parcial.</td>
+          <td><span class="tag tag-de">apoio</span></td></tr>
+      <tr><td class="id">T</td><td><strong>Traseira</strong></td>
+          <td>Traseira do veículo. <strong>Em motocicletas é aqui que a placa aparece</strong>,
+              e assume o papel da frontal.</td>
+          <td><span class="tag tag-im">condicional</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>A evidência que os dois módulos pedem</h3>
+  <p class="prosa">Duas fotos respondem às duas perguntas que o laudo precisa responder,
+     e são as mesmas nos dois módulos:</p>
+  <ul class="lista">
+    <li><strong>Quem é o veículo?</strong> A <em>frontal</em> identifica a placa — ou a
+        <em>traseira</em>, quando o veículo é uma motocicleta.</li>
+    <li><strong>Onde ele estava?</strong> A <em>panorâmica</em> mostra a faixa que o
+        veículo ocupava, que é o que caracteriza tanto a contramão quanto o acostamento.</li>
+  </ul>
+  <p class="prosa">Por isso a pré-seleção automática marca exatamente essas duas, e o
+     laudo exige o mínimo de duas fotos (<span class="id">RN-03</span>). Lateral e
+     traseira entram quando o operador julgar que reforçam a prova, até o limite de oito.</p>
+
+  <h3>Motivos de descarte</h3>
+  <p class="prosa">A lista é <strong>a mesma nos dois módulos</strong>:</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Motivo</th><th>Quando se aplica</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Veículo de emergência</strong></td>
+          <td>Ambulância, viatura, bombeiros — circulação amparada.</td></tr>
+      <tr><td><strong>Pedestre / ciclista</strong></td>
+          <td>O registro não é de veículo automotor.</td></tr>
+      <tr><td><strong>Veículo sem placa</strong></td>
+          <td>O veículo não porta placa.</td></tr>
+      <tr><td><strong>Placa não identificada</strong></td>
+          <td>Há placa e há imagem, mas nenhuma permite lê-la.</td></tr>
+      <tr><td><strong>Sem registro fotográfico</strong></td>
+          <td>Nenhuma imagem foi recuperada do servidor. É o motivo dos trânsitos em
+              <em>sem evidência</em> (<span class="id">RN-11</span>), que não podem ser
+              autuados.</td></tr>
+      <tr><td><strong>Veículo na faixa correta</strong></td>
+          <td>A suspeita não se confirma: o veículo está onde deveria.</td></tr>
+      <tr><td><strong>Alteração na faixa de tráfego</strong></td>
+          <td>Obra, desvio ou sinalização temporária mudaram o sentido ou o uso da faixa.</td></tr>
+      <tr><td><strong>Outros (descreva)</strong></td>
+          <td>Escape da lista. <strong>Exige o campo livre preenchido</strong>
+              (<span class="id">RN-07</span>).</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>O que de fato muda entre os módulos</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th>Aspecto</th><th>Contramão</th><th>Acostamento</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Entrada</strong></td><td colspan="2">O mesmo relatório de transações
+          exportado do Backoffice.</td></tr>
+      <tr><td><strong>Ângulos e pré-seleção</strong></td><td colspan="2">Idênticos:
+          frontal (ou traseira, em moto) + panorâmica.</td></tr>
+      <tr><td><strong>Motivos de descarte</strong></td><td colspan="2">A mesma lista.</td></tr>
+      <tr><td><strong>Título do laudo</strong></td>
+          <td>Comprovação de Trânsito - Contramão</td>
+          <td>Comprovação de Trânsito - Acostamento</td></tr>
+      <tr><td><strong>Pasta da remessa</strong></td>
+          <td colspan="2">Separada por módulo e por data da sessão.</td></tr>
+      <tr><td><strong>O que o operador procura</strong></td>
+          <td>Sentido do veículo contrário ao da faixa</td>
+          <td>Veículo fora das faixas de rolamento</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <b>Achado no relatório de 25/08.</b> A coluna <code>Direção</code> assume o valor
+    <code>Contramão</code> em 8 dos 3.419 trânsitos da amostra — ou seja, o Backoffice
+    <em>já sinaliza</em> parte dos casos de contramão. Isso não substitui a escolha do
+    módulo pelo operador, que continua valendo, mas é bom material para
+    <strong>ordenar a lista</strong>: no módulo contramão, os trânsitos com
+    <code>Direção = Contramão</code> podem vir primeiro. Registrado como
+    <span class="id">RF-25</span>, prioridade desejável. Nenhum equivalente foi
+    encontrado para acostamento.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 05 ═══ -->
+<section id="s5">
+  <div class="eyebrow">Seção 05</div>
+  <h2>Fluxo alvo</h2>
+
+  <p class="prosa">O fluxo mantém os mesmos cinco marcos do processo atual. A diferença
+     está em onde o trabalho acontece: a etapa de carregar fotos deixa de ser um bloco
+     que trava o início e passa a acontecer em paralelo à conferência, e a etapa de
+     escolha de fotos, que hoje não existe, entra como parte da conferência.</p>
+
+  <div class="fluxo">
+    <div class="passo">
+      <i>01 · operador</i><b>Escolher o módulo</b>
+      <span>Contramão ou acostamento. Define a sessão inteira.</span>
+    </div>
+    <div class="passo">
+      <i>02 · operador</i><b>Carregar o relatório</b>
+      <span>Arrasta o .xlsx exportado do Backoffice.</span>
+    </div>
+    <div class="passo passo-auto">
+      <i>03 · aplicação</i><b>Buscar as imagens</b>
+      <span>Sob demanda, priorizando o trânsito na tela e os vizinhos.</span>
+    </div>
+    <div class="passo">
+      <i>04 · operador</i><b>Conferir e escolher</b>
+      <span>Marca as fotos e decide, vendo o laudo se montar ao lado.</span>
+    </div>
+    <div class="passo passo-auto">
+      <i>05 · aplicação</i><b>Gerar a remessa</b>
+      <span>Um PDF por trânsito autuado, mais índice e resumo.</span>
+    </div>
+    <div class="passo">
+      <i>06 · coordenador</i><b>Enviar à PRF</b>
+      <span>Fora da aplicação: a pasta sai pronta.</span>
+    </div>
+  </div>
+  <div class="legenda-fluxo">
+    <span><em class="e-man"></em> passo do operador</span>
+    <span><em class="e-auto"></em> passo automático</span>
+  </div>
+
+  <h3>Percurso principal, passo a passo</h3>
+  <div class="rolagem">
+    <table>
+      <thead><tr><th class="estreita">#</th><th>Ação</th><th>Resposta da aplicação</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Abre o aplicativo</td><td>Mostra a tela de módulos com as duas
+            atividades e a última sessão interrompida, se houver</td></tr>
+        <tr><td>2</td><td>Escolhe <strong>Análise de contramão</strong></td>
+            <td>Fixa o módulo no topo e vai para a carga</td></tr>
+        <tr><td>3</td><td>Arrasta o <code>.xlsx</code></td>
+            <td>Lê a planilha, mostra praça, período e quantidade de trânsitos</td></tr>
+        <tr><td>4</td><td>Confirma o início</td>
+            <td>Abre a conferência no primeiro trânsito e começa a buscar as imagens</td></tr>
+        <tr><td>5</td><td>Confere o trânsito</td>
+            <td>Exibe a grade de dados, o visor e a tira de miniaturas já pré-selecionada</td></tr>
+        <tr><td>6</td><td>Ajusta as fotos do laudo</td>
+            <td>Refaz a prévia ao lado, já com a quebra entre as páginas</td></tr>
+        <tr><td>7</td><td>Pressiona <code>Enter</code> para autuar</td>
+            <td>Grava a decisão, registra na auditoria e avança para o próximo pendente</td></tr>
+        <tr><td>8</td><td>Repete até acabar</td>
+            <td>A trilha de progresso no topo fecha em verde e vermelho</td></tr>
+        <tr><td>9</td><td>Finaliza a sessão</td>
+            <td>Mostra o resumo: autuados, descartados por motivo, sem evidência</td></tr>
+        <tr><td>10</td><td>Gera a remessa</td>
+            <td>Cria a pasta com os laudos, o índice e o resumo, e a abre no Explorador</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Desvios previstos</h4>
+  <ul class="lista">
+    <li><strong>Servidor de imagens inacessível.</strong> A conferência continua com os
+        dados da planilha; cada trânsito mostra o motivo da falha e a URL tentada, e há
+        um botão para tentar de novo depois de reconectar a VPN.</li>
+    <li><strong>Trânsito sem nenhuma foto.</strong> Vai para o estado
+        <em>sem evidência</em>, não pode ser autuado e aparece separado no resumo.</li>
+    <li><strong>Sessão interrompida.</strong> Ao reabrir o mesmo arquivo no mesmo módulo,
+        as decisões e as seleções de foto voltam como estavam.</li>
+    <li><strong>Menos de duas fotos marcadas.</strong> A autuação fica bloqueada, com o
+        motivo escrito no próprio botão.</li>
+    <li><strong>Descarte por <em>Outros</em>.</strong> A confirmação só libera com a
+        descrição preenchida.</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 06 ═══ -->
+<section id="s6">
+  <div class="eyebrow">Seção 06</div>
+  <h2>Regras de negócio</h2>
+
+  <div class="rolagem">
+    <table>
+      <thead><tr><th class="estreita">ID</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td class="id">RN-01</td><td>Uma sessão pertence a <strong>um único módulo</strong>.
+            O módulo é escolhido antes da carga e não muda durante a sessão.</td></tr>
+        <tr><td class="id">RN-02</td><td>Uma sessão é a combinação de <strong>um arquivo
+            <code>.xlsx</code> + um módulo</strong>. Trocar de módulo ou de arquivo encerra
+            a sessão corrente, com confirmação se houver decisões ainda não geradas.</td></tr>
+        <tr><td class="id">RN-03</td><td>O laudo exige <strong>no mínimo duas fotos</strong>:
+            a que identifica a placa e a panorâmica que mostra a faixa. Com menos de duas,
+            a autuação fica bloqueada.</td></tr>
+        <tr><td class="id">RN-04</td><td>O laudo aceita <strong>no máximo 8 fotos</strong>,
+            distribuídas em <strong>no máximo 2 páginas</strong>, com o teto de
+            <strong>4 fotos por página</strong>.</td></tr>
+        <tr><td class="id">RN-05</td><td>A pré-seleção automática marca duas fotos:
+            a <strong>frontal</strong> — ou a <strong>traseira</strong>, quando a categoria
+            é motocicleta — e a <strong>panorâmica</strong>. O operador sempre pode alterar.</td></tr>
+        <tr><td class="id">RN-06</td><td>A ordem das fotos no laudo é
+            <strong>F, P, L, T</strong> e, dentro do ângulo, o número da tomada. Para
+            motocicletas a ordem passa a <strong>T, P, F, L</strong>.</td></tr>
+        <tr><td class="id">RN-07</td><td>Descartar exige <strong>um motivo</strong> da lista
+            fechada. Se o motivo for <strong>Outros (descreva)</strong>, o campo livre
+            passa a ser <strong>obrigatório</strong>.</td></tr>
+        <tr><td class="id">RN-08</td><td>Cada trânsito autuado gera <strong>exatamente um
+            PDF</strong>, nomeado <code>{MODULO}_{PLACA}_{ID}.pdf</code>.</td></tr>
+        <tr><td class="id">RN-09</td><td>O título do laudo é definido pelo módulo:
+            <em>Comprovação de Trânsito - Contramão</em> ou
+            <em>Comprovação de Trânsito - Acostamento</em>.</td></tr>
+        <tr><td class="id">RN-10</td><td>Quando o relatório trouxer as colunas
+            <code>Placa</code> e <code>Placa OCR</code>, a divergência entre elas marca o
+            trânsito na tela de conferência. Não é impeditivo, e não sai no laudo.</td></tr>
+        <tr><td class="id">RN-11</td><td>Trânsito sem nenhuma imagem recuperada fica em
+            <strong>sem evidência</strong> e não pode ser autuado. Pode ser descartado, e
+            o motivo próprio dele é <em>Sem registro fotográfico</em>, que a caixa de
+            motivos já apresenta como sugerido nesse caso.</td></tr>
+        <tr><td class="id">RN-12</td><td>Toda decisão é gravada em disco <strong>no ato</strong>,
+            em duas vias: o rascunho da sessão (para retomada) e a trilha de auditoria
+            (somente acréscimo).</td></tr>
+        <tr><td class="id">RN-13</td><td>Reabrir o mesmo arquivo no mesmo módulo
+            <strong>restaura</strong> decisões, motivos e seleção de fotos.</td></tr>
+        <tr><td class="id">RN-14</td><td>A remessa é <strong>uma pasta por sessão</strong>,
+            contendo os laudos, o índice e o resumo, pronta para ser anexada a um e-mail.</td></tr>
+        <tr><td class="id">RN-15</td><td>Gerar de novo uma remessa já existente cria uma
+            <strong>nova versão</strong> ao lado da anterior (<code>_v2</code>,
+            <code>_v3</code>…). Nada é sobrescrito. A regra é aplicada
+            <strong>no servidor</strong>, não na tela: qualquer pedido de geração para
+            uma pasta que já contenha um <code>indice.csv</code> é desviado para a
+            versão seguinte. É o caminho para quando o operador volta à conferência,
+            muda uma decisão e precisa reenviar — a remessa já entregue à PRF fica
+            intacta.</td></tr>
+        <tr><td class="id">RN-16</td><td>O cache de imagens é <strong>apagado
+            automaticamente ao encerrar o executável</strong>.</td></tr>
+        <tr><td class="id">RN-17</td><td>A pasta das imagens no servidor são os
+            <strong>9 primeiros caracteres do ID da transação</strong>. A coluna
+            <code>Pista</code> do relatório <strong>não</strong> serve para montá-la —
+            ver <a href="#s9">seção 09</a>.</td></tr>
+        <tr><td class="id">RN-18</td><td>Parâmetros da aplicação — servidor, ângulos,
+            limites, textos, listas — vivem <strong>no código-fonte</strong>, num único
+            módulo. Não há tela de configuração.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 07 ═══ -->
+<section id="s7">
+  <div class="eyebrow">Seção 07</div>
+  <h2>Requisitos funcionais</h2>
+
+  <p class="prosa">Prioridade: <span class="tag tag-ob">obrigatório</span> não entrega sem;
+     <span class="tag tag-im">importante</span> entrega, mas fica na lista curta;
+     <span class="tag tag-de">desejável</span> se sobrar tempo. A marca
+     <span class="tag tag-novo">novo</span> indica o que não existe no protótipo 1.0.</p>
+
+  <h3>A · Escolha do módulo</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-01</td><td>Abrir numa tela de módulos com as duas atividades, descritas em uma linha cada.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-02</td><td>Manter o módulo corrente visível em todas as telas seguintes.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-03</td><td>Oferecer, na tela de módulos, a última sessão gravada — dizendo se ela foi <strong>interrompida</strong> (botão <em>Retomar</em>) ou <strong>concluída</strong>, com a pasta da remessa que saiu dela (botão <em>Reabrir</em>).<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>B · Carga do relatório</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-04</td><td>Aceitar o <code>.xlsx</code>/<code>.xlsm</code> do Backoffice por arrastar-e-soltar ou por seleção de arquivo.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-05</td><td>Localizar o cabeçalho pelo texto <code>ID Transação</code>, tolerando número variável de linhas de filtro no topo — na amostra de 25/08 são 30 linhas.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-06</td><td>Combinar a linha de grupos com o cabeçalho para desambiguar colunas repetidas (<code>Arr.</code>, <code>DAC</code>, <code>Rev.</code>), quando existirem.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-07</td><td>Ler os metadados do topo: concessionária, praça, período e a linha <em>Criado por usuário…</em>.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-08</td><td>Recusar arquivo inválido com mensagem que diga o que faltou e o que enviar no lugar.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-09</td><td>Tolerar relatórios com conjuntos de colunas diferentes: campo ausente sai como <code>-</code> no laudo, sem interromper a carga.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>C · Obtenção das imagens</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-10</td><td>Montar a URL como <code>{protocolo}://{servidor}/{raiz}{AAAAMMDD}/{pasta}/{ID}-{ângulo}{nn}.jpg</code>.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-11</td><td>Usar como pasta os <strong>9 primeiros caracteres do ID</strong> (<span class="id">RN-17</span>). A tentativa dupla do protótipo 1.0 deixa de existir.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-12</td><td>Sondar as tomadas de cada ângulo (F01, F02…), parando na primeira ausência.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-13</td><td>Buscar sob demanda, priorizando o trânsito visível e os vizinhos, em vez de baixar tudo antes de a conferência começar.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-14</td><td>Validar a resposta pela assinatura do arquivo, para não aceitar página de erro devolvida com HTTP 200.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-15</td><td>Mostrar, por trânsito, a causa da falha e a URL tentada, e permitir nova tentativa sem recarregar a planilha.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>D · Conferência</h3>
+  <div class="nota">
+    <b>Não há campo de comentário.</b> O laudo é evidência fotográfica e nada mais: o
+    operador não escreve nada que chegue à PRF. O único texto que ele digita na sessão é
+    a descrição do descarte quando escolhe <em>Outros</em> — e isso fica na auditoria
+    interna, não no laudo.
+  </div>
+
+  <div class="nota nota-alerta">
+    <b>Quem tem direito ao teclado.</b> Achado no protótipo: os controles de brilho e
+    contraste são <code>input[type=range]</code>, e uma regra ingênua de "ignorar teclas
+    vindas de <code>INPUT</code>" fazia com que, depois de ajustar o brilho — justamente o
+    gesto que antecede olhar a próxima foto de uma traseira escura —, <em>todos</em> os
+    atalhos morressem: setas, Enter, Backspace e Espaço. Pior, as setas passavam a mover o
+    controle deslizante em vez da foto.
+    <br><br>
+    A regra correta é: <b>só campos de digitação de texto</b> (<code>textarea</code> e
+    <code>input</code> textual) tomam o teclado. Deslizantes e botões não. As setas cancelam
+    a ação nativa do deslizante, para não mudar o brilho sem querer.
+    <b>Enter</b> e <b>Espaço</b> são a exceção: quando o foco está sobre um botão, valem
+    para esse botão, senão a navegação por Tab ficaria imprevisível.
+  </div>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-16</td><td>Apresentar os dados do trânsito <strong>e</strong> as informações complementares numa <strong>coluna à esquerda</strong>, agrupados por assunto — identificação, onde, quando, transação, complementares.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-17</td><td>Manter a trilha de progresso clicável, colorida por decisão, com salto direto para qualquer trânsito. Acima de 300 trânsitos ela vira <strong>faixas agregadas</strong>: com milhares de itens cada botão teria menos de um pixel e deixaria de ser clicável. A cor da faixa mostra o que ainda falta — pendente ganha das demais.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-17b</td><td><strong>Filtrar por estado</strong> — pendentes, autuados, descartados, sem evidência — e <strong>buscar por placa ou ID</strong>. O filtro comanda a navegação: as setas, o PgUp/PgDn e o salto que vem depois de decidir andam dentro do conjunto filtrado. Sem isso, retomar uma sessão de milhares de trânsitos obriga a percorrer um a um.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-17c</td><td>Mostrar quantas imagens já chegaram enquanto a busca corre, e um campo para saltar direto a um número de trânsito.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+      <tr><td class="id">RF-18</td><td>Exibir a imagem <strong>na proporção do próprio arquivo</strong>, no maior tamanho que couber, sem distorcer e sem cortar. O quadro fixo de 4:3 vale para o <em>relatório</em>, onde a grade precisa ser uniforme — no visor ele só criaria tarja preta e encolheria a foto.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-19</td><td>Posicionar a navegação entre trânsitos <strong>centralizada, acima das fotos</strong>.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-20</td><td>Visor com abas por ângulo à esquerda, cada uma exibindo <strong>quantas fotos existem naquele ângulo</strong>, mais <strong>setas sobre a própria imagem</strong> e um contador de posição — o ciclo de leitura inteiro precisa ser possível só com o mouse.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-21</td><td>Ajuste de brilho e contraste, válido também na imagem ampliada.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-22</td><td>Ampliar a imagem pelo botão <strong>ou clicando sobre a própria imagem</strong>, com zoom pela roda, arrasto e duplo clique para reajustar.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-23</td><td>Manter a <strong>prévia do laudo embutida à direita</strong>, ocupando um terço da largura, atualizada a cada mudança de seleção.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-24</td><td>Permitir o ciclo completo pelo teclado, sem mouse. <strong>Só campos de digitação de texto capturam os atalhos</strong> — controles deslizantes e botões não podem engolir as setas (ver a nota abaixo).</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-25</td><td>No módulo contramão, ordenar a lista pondo à frente os trânsitos com <code>Direção = Contramão</code>.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-de">desejável</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>E · Seleção das fotos do laudo</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-26</td><td>Exibir uma tira com miniaturas de todas as imagens do trânsito, com <strong>duas funções separadas na mesma miniatura</strong>: clicar na <em>imagem</em> troca a foto em exibição; clicar no <em>quadradinho</em> inclui ou tira do relatório, sem mexer no que está sendo exibido.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-27</td><td>Incluir e tirar a foto do relatório por três caminhos equivalentes: o seletor <strong>no canto superior direito da imagem em exibição</strong>, o <strong>quadradinho da miniatura</strong> na tira, ou a tecla <code>Espaço</code>. Estado visível sem depender só de cor.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-28</td><td>Pré-selecionar automaticamente conforme <span class="id">RN-05</span>: identificação da placa + panorâmica.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-29</td><td>Mostrar o contador de incluídas contra o limite de 8 e impedir passar dele, explicando por quê. Oferecer <strong>sugerida</strong> e <strong>limpar</strong> como atalhos de composição — <em>incluir todas</em> não existe: com teto de 8 fotos ele prometeria o que nem sempre pode cumprir.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-30</td><td>Refletir a seleção na prévia embutida, incluindo a quebra entre a primeira e a segunda página.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-31</td><td>Indicar em cada miniatura selecionada a <strong>ordem</strong> e a <strong>página</strong> em que ela vai cair no laudo.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>F · Decisão</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-32</td><td>Oferecer três desfechos: autuar, descartar e deixar pendente.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-33</td><td>Pedir o motivo do descarte a partir da lista fechada da seção 04.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-34</td><td>Exigir o campo livre preenchido quando o motivo for <em>Outros (descreva)</em>, bloqueando a confirmação enquanto estiver vazio.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-35</td><td>Bloquear a autuação com menos de duas fotos selecionadas, mostrando o motivo no próprio botão.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-35b</td><td>Ao autuar um trânsito com placa divergente do OCR (<span class="id">RN-10</span>), <strong>pedir confirmação</strong> mostrando as duas leituras e qual delas sai no relatório. Não impede autuar; impede autuar sem ver.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+      <tr><td class="id">RF-35c</td><td>Toda pergunta de confirmação usa o diálogo da própria aplicação, nunca o <code>confirm()</code> do navegador — que trava a página, ignora o tema e se comporta de forma imprevisível dentro da janela nativa.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+      <tr><td class="id">RF-36</td><td>Permitir rever e trocar qualquer decisão até a geração da remessa.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>G · Laudo em PDF</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-37</td><td>Gerar um PDF por trânsito autuado, nomeado conforme <span class="id">RN-08</span>.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-38</td><td>Emitir sempre em <strong>A4 retrato</strong>.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-39</td><td>Cabeçalho no topo de toda página: logo da concessionária à esquerda e o título do módulo centralizado.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-40</td><td>Imprimir a linha de origem começando por <strong>Analisado por</strong>, sem o trecho do nó do host.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-41</td><td>Imprimir os dados em três linhas de três campos: Data · Hora · ID; Rodovia · Praça · Pista; Placa · Categoria · Velocidade.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-42</td><td>Dispor as fotos selecionadas em grade 4:3, no máximo 4 por página e no máximo 2 páginas.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-43</td><td>Legendar cada foto com o ângulo por extenso e o nome do arquivo de origem.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-44</td><td>Encerrar com a declaração de emissão da concessionária e a ressalva sobre a responsabilidade pela autuação.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-45</td><td>Nunca partir uma foto entre duas páginas.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>H · Remessa</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-46</td><td>Criar uma pasta de remessa por sessão, nomeada por módulo e data.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-47</td><td>Gravar um índice com um registro por laudo: ID, data/hora, placa, pista, arquivo e fotos usadas.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+      <tr><td class="id">RF-48</td><td>Mostrar o andamento da geração e listar as falhas, sem interromper as demais.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-49</td><td>Abrir a pasta pronta no Explorador ao final.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-50</td><td>Compactar a remessa em um único <code>.zip</code> — a remessa segue por e-mail, então o pacote único é o formato de entrega.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+      <tr><td class="id">RF-51</td><td>Emitir uma folha de rosto da remessa em PDF, com o total encaminhado e o período coberto.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-de">desejável</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>I · Parâmetros, diagnóstico e cache</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-52</td><td>Concentrar os parâmetros — servidor, raiz, ângulos, limites, títulos, listas de motivos — em <strong>um único módulo do código-fonte</strong>. Não há tela de configuração.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-53</td><td>Exibir o diagnóstico da falha de imagem na própria tela de conferência: causa, URL tentada e botão de nova tentativa.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-54</td><td>Apagar o cache de imagens <strong>ao encerrar o executável</strong>.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-55</td><td>Oferecer modo demonstração com imagens sintéticas por argumento de linha de comando, para treinar e apresentar sem VPN.</td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>J · Auditoria e retomada</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Requisito</th><th class="estreita">Prior.</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-56</td><td>Gravar o rascunho da sessão a cada ação do operador.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-57</td><td>Restaurar decisões, motivos e seleção de fotos ao reabrir o mesmo arquivo no mesmo módulo.</td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-58</td><td>Manter trilha de auditoria somente de acréscimo com data/hora, usuário do Windows, trânsito, ação e motivo.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-ob">obrigatório</span></td></tr>
+      <tr><td class="id">RF-59</td><td>Exibir o resumo da sessão com autuados, descartados agrupados por motivo e trânsitos sem evidência. Gerada a remessa, o botão principal vira <strong>Página inicial</strong>: a sessão acabou. Voltar à conferência e mudar qualquer coisa devolve o botão <em>Gerar remessa</em>, que produz a versão seguinte.<span class="tag tag-novo">novo</span></td>
+          <td><span class="tag tag-im">importante</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 08 ═══ -->
+<section id="s8">
+  <div class="eyebrow">Seção 08</div>
+  <h2>Requisitos não funcionais</h2>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Categoria</th><th>Requisito</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RNF-01</td><td>Distribuição</td><td>Executável único para Windows
+          10 e 11 (64 bits), sem exigir Python, Excel ou privilégio de administrador.
+          Entrega em pasta copiável.</td></tr>
+      <tr><td class="id">RNF-02</td><td>Distribuição</td><td>Abrir em <strong>janela
+          nativa</strong>, sem barra de endereço e sem depender de o operador ter um
+          navegador configurado.</td></tr>
+      <tr><td class="id">RNF-03</td><td>Desempenho</td><td>Partida a frio em até 5 segundos
+          na máquina padrão da operação.</td></tr>
+      <tr><td class="id">RNF-04</td><td>Desempenho</td><td>Volume previsto de
+          <strong>100 trânsitos por dia em cada módulo</strong>. Com um relatório desse
+          porte, a primeira imagem aparece em até 3 segundos depois da carga; a aplicação
+          deve aguentar relatórios de até 3.500 linhas sem degradar, que é o tamanho de
+          uma exportação horária sem filtro.</td></tr>
+      <tr><td class="id">RNF-05</td><td>Desempenho</td><td>Trocar de trânsito responde em
+          até 200 ms quando as imagens já estão em cache.</td></tr>
+      <tr><td class="id">RNF-06</td><td>Compatibilidade</td><td>Usável a partir de
+          1366 × 768; sem rolagem horizontal até 1920 × 1080.</td></tr>
+      <tr><td class="id">RNF-07</td><td>Privacidade</td><td>Nenhum dado sai da máquina. O
+          único tráfego externo são as requisições ao servidor de imagens configurado.</td></tr>
+      <tr><td class="id">RNF-08</td><td>Privacidade</td><td>As imagens ficam em cache
+          temporário e são <strong>apagadas automaticamente ao encerrar o
+          executável</strong>. Nada de placa ou imagem sobrevive ao fechamento da
+          aplicação.</td></tr>
+      <tr><td class="id">RNF-09</td><td>Confiabilidade</td><td>Queda da VPN no meio da
+          sessão não perde decisão nem encerra a aplicação; a busca de imagens é
+          retomável.</td></tr>
+      <tr><td class="id">RNF-10</td><td>Confiabilidade</td><td>Falha ao gerar um laudo não
+          interrompe os demais; a falha é listada ao final com o motivo.</td></tr>
+      <tr><td class="id">RNF-11</td><td>Usabilidade</td><td>Ciclo completo operável pelo
+          teclado. Toda ação destrutiva é reversível até a geração da remessa.</td></tr>
+      <tr><td class="id">RNF-12</td><td>Acessibilidade</td><td>Contraste mínimo AA para
+          texto, foco de teclado sempre visível, fonte base de no mínimo 13 px, estado
+          nunca comunicado só por cor.</td></tr>
+      <tr><td class="id">RNF-13</td><td>Idioma</td><td>Interface e laudos em português do
+          Brasil.</td></tr>
+      <tr><td class="id">RNF-14</td><td>Manutenibilidade</td><td>Mapeamento de colunas,
+          ângulos, limites, títulos e listas de motivos concentrados em
+          <strong>um único módulo do código-fonte</strong>, com nomes autoexplicativos —
+          é ali que a manutenção acontece.</td></tr>
+      <tr><td class="id">RNF-15</td><td>Manutenibilidade</td><td>Todo o desenho do laudo
+          isolado em um módulo; nenhuma outra parte da aplicação conhece o layout do PDF.</td></tr>
+      <tr><td class="id">RNF-16</td><td>Observabilidade</td><td>Log de sessão em arquivo,
+          com rotação, contendo carga, falhas de imagem e geração de laudos.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 09 ═══ -->
+<section id="s9">
+  <div class="eyebrow">Seção 09</div>
+  <h2>Modelo de dados</h2>
+
+  <h3>Entidades</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th>Entidade</th><th>Campos principais</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sessão</strong></td>
+          <td>id, módulo, arquivo, iniciada em, operador, pasta de remessa, estado</td>
+          <td>Uma por combinação arquivo + módulo</td></tr>
+      <tr><td><strong>Relatório</strong></td>
+          <td>arquivo, metadados (concessionária, praça, período, origem), colunas</td>
+          <td>Espelha o cabeçalho da planilha</td></tr>
+      <tr><td><strong>Trânsito</strong></td>
+          <td>id, linha, data/hora, placa, campos brutos, pasta no servidor, estado</td>
+          <td>Estado: pendente, autuado, descartado, sem evidência</td></tr>
+      <tr><td><strong>Imagem</strong></td>
+          <td>ângulo, tomada, url, caminho local, erro, selecionada, ordem, página</td>
+          <td><code>selecionada</code>, <code>ordem</code> e <code>página</code> são novos</td></tr>
+      <tr><td><strong>Decisão</strong></td>
+          <td>trânsito, desfecho, motivo, descrição livre, operador, momento</td>
+          <td>A descrição livre só é exigida no motivo <em>Outros</em></td></tr>
+      <tr><td><strong>Laudo</strong></td>
+          <td>trânsito, arquivo, fotos usadas, páginas, gerado em, versão da remessa</td>
+          <td>Um por trânsito autuado</td></tr>
+      <tr><td><strong>Remessa</strong></td>
+          <td>sessão, pasta, versão, total de laudos, período coberto, gerada em</td>
+          <td>Entidade nova</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <b>Relações.</b> Uma <b>Sessão</b> carrega um <b>Relatório</b>, que contém muitos
+    <b>Trânsitos</b>. Cada Trânsito tem de zero a doze <b>Imagens</b> (quatro ângulos ×
+    até três tomadas) e no máximo uma <b>Decisão</b>. Cada Trânsito autuado produz um
+    <b>Laudo</b> de uma ou duas páginas, e o conjunto dos laudos de uma sessão forma uma
+    <b>Remessa</b>.
+  </div>
+
+  <h3>A estrutura do ID da transação</h3>
+  <p class="prosa">Medida sobre os 3.419 trânsitos do relatório de 25/08/2026
+     (REF-000, todas as praças, todas as pistas). O ID tem
+     <strong>27 caracteres, sempre</strong>, e é inteiramente decomponível:</p>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Posição</th><th class="estreita">Tam.</th><th>Conteúdo</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>1–2</td><td>2</td><td>Concessionária</td><td><code>31</code></td></tr>
+      <tr><td>3–4</td><td>2</td><td>Praça</td><td><code>02</code></td></tr>
+      <tr><td>5–9</td><td>5</td><td><strong>Pista real</strong></td><td><code>01LFF</code></td></tr>
+      <tr><td>10–23</td><td>14</td><td>Data e hora, <code>AAAAMMDDHHMMSS</code></td>
+          <td><code>20260825090000</code></td></tr>
+      <tr><td>24–27</td><td>4</td><td>Sequência</td><td><code>8832</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <p class="prosa">A data e a hora embutidas no ID bateram com a coluna
+     <code>Data/Hora</code> em <strong>3.419 de 3.419</strong> registros. Os
+     <strong>9 primeiros caracteres são a pasta das imagens</strong> — e são a única
+     fonte confiável dela.</p>
+
+  <div class="nota nota-alerta">
+    <b>Resolvido: a coluna <code>Pista</code> não serve para montar a pasta.</b>
+    Comparando <code>Conces. + Praça + Pista</code> com o prefixo do ID, os dois
+    discordam em <strong>1.174 dos 3.419 trânsitos (34%)</strong>. A discordância é
+    sistemática e de uma forma só: a coluna diz <code>01OFF</code> onde o ID diz
+    <code>01LFF</code>, e isso acontece exatamente quando <code>Faixa</code> é 03 ou 04.
+    Nas praças 02 a 05 existe uma pista física só — <code>01LFF</code> — mas o relatório
+    troca o rótulo conforme a faixa; na praça 01, onde há duas pistas de verdade
+    (<code>01LFF</code> e <code>02OFF</code>), coluna e ID concordam em todas as linhas.
+    <br><br>
+    <b>Conclusão:</b> a pasta é <code>ID[0:9]</code>, ponto. A tentativa dupla do
+    protótipo 1.0 pode ser removida (<span class="id">RF-11</span>), e a pergunta
+    <span class="id">Q-07</span> está encerrada sem depender da TI.
+  </div>
+
+  <h3>Colunas do relatório que a aplicação usa</h3>
+  <p class="prosa">Nem todo relatório traz o mesmo conjunto de colunas. O
+     <em>TransactionSelectionReport</em> de 25/08 traz 12 colunas e <strong>não</strong>
+     traz placa, categoria nem velocidade; o relatório usado no protótipo 1.0 trazia esses
+     campos. Por isso <span class="id">RF-09</span>: campo ausente sai como <code>-</code>
+     no laudo, sem quebrar a carga.</p>
+
+  <div class="rolagem"><table>
+    <thead><tr><th>Coluna</th><th>Para que serve</th><th class="estreita">No relat. de 25/08</th></tr></thead>
+    <tbody>
+      <tr><td><code>ID Transação</code></td><td>Identificador, nome do arquivo de imagem,
+          pasta no servidor e data/hora de reserva</td><td>sim</td></tr>
+      <tr><td><code>Data/Hora</code></td><td>Data da pasta; campos Data e Hora do laudo</td><td>sim</td></tr>
+      <tr><td><code>Conces.</code>, <code>Praça</code></td><td>Cabeçalho e campo Praça do
+          laudo</td><td>sim</td></tr>
+      <tr><td><code>Pista</code></td><td>Campo Pista do laudo. <strong>Não</strong> serve
+          para montar a pasta</td><td>sim</td></tr>
+      <tr><td><code>Faixa</code></td><td>Contexto da conferência — é o que a panorâmica
+          precisa evidenciar</td><td>sim</td></tr>
+      <tr><td><code>Direção</code></td><td>Assume <code>Contramão</code> em parte dos
+          registros; usada para ordenar a lista (<span class="id">RF-25</span>)</td><td>sim</td></tr>
+      <tr><td><code>Modo</code>, <code>Estado</code>, <code>Status</code>,
+          <code>T.Pago</code>, <code>F.Pago</code></td>
+          <td>Informações complementares no bloco do topo</td><td>sim</td></tr>
+      <tr><td><code>Placa</code></td><td>Campo Placa do laudo e nome do arquivo</td><td>não</td></tr>
+      <tr><td><code>Categoria</code></td><td>Campo Categoria do laudo; define se o veículo
+          é motocicleta (<span class="id">RN-05</span>)</td><td>não</td></tr>
+      <tr><td><code>Vel.</code></td><td>Campo Velocidade do laudo</td><td>não</td></tr>
+      <tr><td><code>Placa OCR</code></td><td>Comparação com a placa na tela
+          (<span class="id">RN-10</span>). Não sai no laudo</td><td>não</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota nota-alerta">
+    <b>Pendência nova.</b> O laudo pede <strong>Placa, Categoria e Velocidade</strong>, e o
+    relatório de 25/08 não traz nenhum dos três. Antes da Fase 1 é preciso definir
+    <em>qual</em> exportação do Backoffice o operador vai usar — a que tem esses campos —
+    ou aceitar que os três saiam vazios. Registrado como <span class="id">Q-10</span>.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 10 ═══ -->
+<section id="s10">
+  <div class="eyebrow">Seção 10</div>
+  <h2>Mapa de telas</h2>
+
+  <p class="prosa">Cinco telas. A configuração <strong>deixou de ser tela</strong>: os
+     parâmetros vivem no código (<span class="id">RN-18</span>). E a prévia do relatório
+     deixou de ser uma janela sobreposta — ela passa a ficar <strong>permanentemente
+     visível</strong> ao lado das fotos, porque escolher a evidência e ver o resultado são
+     o mesmo gesto.</p>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Tela</th><th>Função</th><th>Elementos</th><th>Estados</th></tr></thead>
+    <tbody>
+      <tr><td><strong>T1 · Módulos</strong><span class="tag tag-novo">nova</span></td>
+          <td>Escolher a atividade e, se houver, retomar a sessão anterior</td>
+          <td>Dois cartões de módulo; faixa de retomada</td>
+          <td>Sem sessão · com sessão pendente</td></tr>
+      <tr><td><strong>T2 · Carga</strong></td>
+          <td>Receber a planilha do Backoffice</td>
+          <td>Área de arrastar-e-soltar; resumo da planilha lida; erro de leitura</td>
+          <td>Vazia · lendo · lida · erro</td></tr>
+      <tr><td><strong>T3 · Conferência</strong></td>
+          <td>Onde o operador passa 95% do tempo</td>
+          <td>Trilha; três colunas — dados · foto · prévia; barra de decisão</td>
+          <td>Carregando · pronto · sem evidência · decidido</td></tr>
+      <tr><td><strong>T4 · Resumo e remessa</strong></td>
+          <td>Fechar a sessão e gerar os relatórios</td>
+          <td>Contadores; descartes por motivo; pendências; pasta de destino; geração</td>
+          <td>Com pendentes · pronto · gerando · gerado · com falhas</td></tr>
+      <tr><td><strong>T5 · Ampliação</strong></td>
+          <td>Ler placa e detalhe fino</td>
+          <td>Imagem em tela cheia; zoom; navegação entre fotos; brilho e contraste</td>
+          <td>Aberta · arrastando</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>O arranjo da tela de conferência</h3>
+  <p class="prosa"><strong>Três colunas.</strong> Os dados do trânsito saíram do topo e
+     viraram a coluna da esquerda; a foto ocupa o meio; a prévia do relatório fica à
+     direita. O motivo é altura: em 1366 × 768 o bloco de dados no topo comia a vertical
+     que a foto precisava, e a foto é o trabalho.</p>
+
+  <div class="esqueleto" aria-label="Esqueleto da tela de conferência">
+    <div class="esq-faixa">Trilha de progresso</div>
+    <div class="esq-corpo esq-tres">
+      <div class="esq-col">
+        <div class="esq-rot">Dados do trânsito</div>
+        <div class="esq-cx"><b>Identificação</b>Placa · Categoria · Velocidade</div>
+        <div class="esq-cx"><b>Onde</b>Praça · Pista · Faixa · Direção</div>
+        <div class="esq-cx"><b>Transação</b>ID · Pasta · Imagens · complementares</div>
+      </div>
+      <div class="esq-col">
+        <div class="esq-cx esq-centro" style="padding:6px">
+          &lsaquo; Anterior &nbsp; · &nbsp; 4 / 31 &nbsp; · &nbsp; Próximo &rsaquo;
+        </div>
+        <div class="esq-foto">
+          <span class="esq-seletor">&#10003; No relatório</span>
+          &lsaquo;&nbsp;&nbsp; a foto, no maior tamanho que couber &nbsp;&nbsp;&rsaquo;
+        </div>
+        <div class="esq-cx" style="padding:5px 8px;font-size:11px">
+          3 / 10 · L01 &nbsp; Brilho &nbsp;———o——— &nbsp; Contraste &nbsp;——o————
+        </div>
+        <div class="esq-rot">Fotos do trânsito · 2 de 8 · incluir todas</div>
+        <div class="esq-tira">
+          <i class="marcada"></i><i></i><i class="marcada"></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="esq-col">
+        <div class="esq-rot">Prévia do relatório</div>
+        <div class="esq-cx"><b>Comprovação de Trânsito</b>Cabeçalho, dados e a grade de
+          fotos exatamente como vão sair no PDF — inclusive a quebra de página.</div>
+      </div>
+    </div>
+    <div class="esq-faixa" style="border-top:1px solid var(--linha);border-bottom:none">
+      Atalhos &nbsp;·&nbsp; Descartar (Backspace) &nbsp;·&nbsp; Autuar (Enter)
+    </div>
+  </div>
+
+  <div class="nota">
+    <b>Na miniatura, a imagem navega e o quadradinho inclui.</b> No primeiro desenho o
+    clique na miniatura fazia as duas coisas — e o operador, que usa a tira justamente
+    para <em>olhar</em> as fotos uma a uma, acabava incluindo imagem sem querer só de
+    navegar. As duas funções foram separadas dentro da própria miniatura: clicar na
+    imagem troca a foto em exibição, clicar no quadradinho inclui ou tira, sem mexer no
+    visor (<span class="id">RF-26</span>).
+    <br><br>
+    A mesma inclusão está no <strong>canto superior direito da imagem em exibição</strong>
+    (<span class="id">RF-27</span>) — que é onde o olho já está quando a decisão é
+    tomada — e na tecla <code>Espaço</code>. Três caminhos para o mesmo ato, cada um
+    servindo a um jeito de trabalhar.
+  </div>
+
+  <div class="nota">
+    <b>Planilha na entrada, relatório na saída.</b> A interface chama de
+    <em>relatório</em> o PDF que vai para a PRF. Para a palavra não nomear as duas pontas
+    do fluxo, o arquivo que o Backoffice exporta passou a se chamar
+    <strong>planilha</strong> em todas as telas. Este caderno ainda usa <em>laudo</em>
+    em alguns lugares como sinônimo de relatório.
+  </div>
+
+  <h3>Atalhos de teclado</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Tecla</th><th>Ação</th><th class="estreita">Muda?</th></tr></thead>
+    <tbody>
+      <tr><td><code>Enter</code></td><td>Autuar e ir para o próximo pendente</td>
+          <td><span class="tag tag-novo">era C</span></td></tr>
+      <tr><td><code>Backspace</code></td><td>Descartar — abre a lista de motivos</td>
+          <td><span class="tag tag-novo">era D</span></td></tr>
+      <tr><td><code>&larr;</code> <code>&rarr;</code></td>
+          <td>Foto anterior e próxima <strong>do mesmo trânsito</strong>, percorrendo
+              todas as tomadas de todos os ângulos em sequência</td>
+          <td><span class="tag tag-novo">mudou</span></td></tr>
+      <tr><td><code>&uarr;</code> <code>&darr;</code></td>
+          <td>Ângulo anterior e próximo do mesmo trânsito</td>
+          <td><span class="tag tag-novo">mudou</span></td></tr>
+      <tr><td><code>Espaço</code></td><td>Incluir ou tirar do relatório a foto em
+          exibição — o mesmo que o seletor no canto da imagem</td>
+          <td>—</td></tr>
+      <tr><td><code>1</code>–<code>4</code></td><td>Ir direto ao ângulo, na ordem das abas —
+          que é F, P, L, T, ou T, P, F, L em motocicleta</td>
+          <td>—</td></tr>
+      <tr><td><code>PgUp</code> <code>PgDn</code></td>
+          <td>Trânsito anterior e próximo — as setas horizontais são das fotos</td>
+          <td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td><code>F</code></td><td>Ampliar a imagem</td><td>—</td></tr>
+      <tr><td><code>Esc</code></td><td>Fechar a ampliação ou a caixa de motivos</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <b>Clicar na imagem amplia.</b> O botão <em>Ampliar</em> continua existindo, mas a
+    imagem inteira passa a ser área clicável — é o gesto que o operador tenta primeiro.
+    <br><br>
+    <b>Setas sobre a imagem, para quem não usa teclado.</b> Duas setas nas tarjas laterais
+    do visor percorrem as mesmas fotos que <code>&larr;</code> e <code>&rarr;</code>, na
+    mesma ordem e dando a volta no fim. Ficam fora da área da foto, e somem quando o
+    trânsito tem uma imagem só. Um contador <em>3 / 10 · L01 · Lateral</em> na barra de
+    controles diz onde o operador está na sequência (<span class="id">RF-20</span>).
+    <br><br>
+    <b>O número na aba é a contagem, não a ordem.</b> Sob a letra de cada ângulo vai
+    <em>quantas fotos aquele ângulo tem</em> — <code>F 3</code> significa três frontais, não
+    "ângulo número 3". Ângulo sem imagem mostra um traço e fica desabilitado. A tecla de
+    atalho de cada aba vai na dica ao passar o mouse.
+    <br><br>
+    <b>PgUp / PgDn foi escolha minha.</b> Com as setas horizontais passando a percorrer as
+    fotos, a navegação entre trânsitos ficou sem tecla. Os botões centralizados acima das
+    fotos resolvem no mouse; PgUp e PgDn mantêm o ciclo inteiro possível pelo teclado
+    (<span class="id">RF-24</span>).
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 11 ═══ -->
+<section id="s11">
+  <div class="eyebrow">Seção 11</div>
+  <h2>O laudo em PDF</h2>
+
+  <p class="prosa">O laudo é <strong>evidência fotográfica e mais nada</strong>. Saíram o
+     enquadramento legal, a placa do OCR, o comentário do operador e a linha de
+     assinatura: a PRF pediu só a evidência, e o documento passa a dizer explicitamente
+     que a concessionária não é quem autua.</p>
+
+  <h3>A página</h3>
+  <div class="paginas">
+    <div class="folha-a4">
+      <span class="selo-pag">Página 1</span>
+      <div class="mq-cabecalho">
+        <div class="mq-logo">logo</div>
+        <div class="mq-titulo">COMPROVAÇÃO DE TRÂNSITO - CONTRAMÃO</div>
+      </div>
+      <div style="font-size:7px;color:var(--suave);margin-bottom:8px">
+        Analisado por usuário 00598 em 25/08/2026 12:00:02</div>
+      <div class="mq-rotulo">Dados</div>
+      <div class="mq-dados3">
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Data</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">25/08/2026</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Hora</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">09:14:22</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">ID</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">340201LFF…3401</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Rodovia</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">BR-000</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Praça</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">P2</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Pista</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">01LFF</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Placa</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">NDU8490</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Categoria</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">Passeio</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Velocidade</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">78 km/h</i></div>
+      </div>
+      <div class="mq-rotulo">Evidência fotográfica</div>
+      <div class="mq-fotos" style="grid-template-columns:1fr 1fr">
+        <div class="mq-cel"><div class="mq-43" data-cam="F01"></div><span>Frontal · …3401-F01.jpg</span></div>
+        <div class="mq-cel"><div class="mq-43" data-cam="P01"></div><span>Panorâmica · …3401-P01.jpg</span></div>
+        <div class="mq-cel"><div class="mq-43" data-cam="L01"></div><span>Lateral · …3401-L01.jpg</span></div>
+        <div class="mq-cel"><div class="mq-43" data-cam="T01"></div><span>Traseira · …3401-T01.jpg</span></div>
+      </div>
+      <div class="mq-decl">
+        <b>Emitido por Concessionária Rodovia Exemplo S.A.</b><br>
+        Este documento é apenas uma evidência fotográfica do tráfego registrado pelas
+        câmeras do Free-flow, não sendo a concessionária responsável por emissão da
+        autuação.
+      </div>
+    </div>
+
+    <div class="folha-a4">
+      <span class="selo-pag">Página 2</span>
+      <div class="mq-cabecalho">
+        <div class="mq-logo">logo</div>
+        <div class="mq-titulo">COMPROVAÇÃO DE TRÂNSITO - CONTRAMÃO</div>
+      </div>
+      <div style="font-size:7px;color:var(--suave);margin-bottom:8px">
+        Analisado por usuário 00598 em 25/08/2026 12:00:02</div>
+      <div class="mq-rotulo">Dados</div>
+      <div class="mq-dados3">
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Data</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">25/08/2026</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Hora</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">09:14:22</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">ID</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">340201LFF…3401</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Rodovia</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">BR-000</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Praça</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">P2</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Pista</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">01LFF</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Placa</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">NDU8490</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Categoria</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">Passeio</i></div>
+        <div class="mq-campo"><em style="width:auto;height:auto;font-style:normal;background:none;font-size:6.5px;color:var(--suave)">Velocidade</em><i style="width:auto;height:auto;background:none;font-size:8px;font-style:normal;color:var(--tinta);font-weight:600">78 km/h</i></div>
+      </div>
+      <div class="mq-rotulo">Evidência fotográfica</div>
+      <div class="mq-fotos" style="grid-template-columns:1fr 1fr">
+        <div class="mq-cel"><div class="mq-43" data-cam="F02"></div><span>Frontal · …3401-F02.jpg</span></div>
+        <div class="mq-cel"><div class="mq-43" data-cam="P02"></div><span>Panorâmica · …3401-P02.jpg</span></div>
+      </div>
+      <div class="mq-decl">
+        <b>Emitido por Concessionária Rodovia Exemplo S.A.</b><br>
+        Este documento é apenas uma evidência fotográfica do tráfego registrado pelas
+        câmeras do Free-flow, não sendo a concessionária responsável por emissão da
+        autuação.
+      </div>
+    </div>
+  </div>
+
+  <p class="prosa">Acima, o caso de 6 fotos: quatro na primeira página, duas na segunda.
+     O cabeçalho, os dados e a declaração de rodapé se repetem em ambas — cada página é
+     um documento completo por si.</p>
+
+  <h3>Especificação do documento</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Item</th><th>Definição</th><th class="estreita">Situação</th></tr></thead>
+    <tbody>
+      <tr><td>Formato</td><td><strong>A4 retrato, sempre.</strong> Margens de 12 mm,
+          largura útil de 186 mm.</td><td><span class="tag tag-novo">fixado</span></td></tr>
+      <tr><td>Logo</td><td>Lida de um arquivo ao lado do executável. A logo correta da
+          Exemplo é entregue já na pasta.</td><td><span class="tag tag-novo">fixado</span></td></tr>
+      <tr><td>Título</td><td><em>Comprovação de Trânsito - Contramão</em> ou
+          <em>Comprovação de Trânsito - Acostamento</em>, conforme o módulo.</td>
+          <td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td>Linha de origem</td><td><strong>Analisado por</strong> usuário … em …
+          O trecho <em>no nó BRN364 HOST</em> não é impresso.</td>
+          <td><span class="tag tag-novo">alterado</span></td></tr>
+      <tr><td>Dados</td><td>Nove campos em três linhas de três:<br>
+          <strong>Data · Hora · ID</strong><br>
+          <strong>Rodovia · Praça · Pista</strong><br>
+          <strong>Placa · Categoria · Velocidade</strong></td>
+          <td><span class="tag tag-novo">reduzido</span></td></tr>
+      <tr><td>Fotos</td><td>Sempre em <strong>4:3</strong>, duas colunas, no máximo 4 por
+          página e no máximo 2 páginas. Coluna de 90 mm, altura de 67,5 mm.</td>
+          <td><span class="tag tag-novo">refeito</span></td></tr>
+      <tr><td>Legenda</td><td>Ângulo por extenso e nome do arquivo de origem, sob cada
+          foto.</td><td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td>Rodapé</td><td>A declaração de emissão e a ressalva de responsabilidade,
+          repetidas em toda página, mais a paginação.</td>
+          <td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td>Enquadramento legal</td><td>—</td>
+          <td><span class="tag tag-de">removido</span></td></tr>
+      <tr><td>Placa OCR</td><td>—</td><td><span class="tag tag-de">removido</span></td></tr>
+      <tr><td>Comentário</td><td>—</td><td><span class="tag tag-de">removido</span></td></tr>
+      <tr><td>Assinatura</td><td>—</td><td><span class="tag tag-de">removido</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Texto exato do rodapé</h3>
+  <div class="nota">
+    <b>Emitido por Concessionária Rodovia Exemplo S.A.</b><br>
+    Este documento é apenas uma evidência fotográfica do tráfego registrado pelas câmeras
+    do Free-flow, não sendo a concessionária responsável por emissão da autuação.
+  </div>
+
+  <h3>Distribuição das fotos entre as páginas</h3>
+  <p class="prosa">Duas colunas, teto de quatro por página, teto de duas páginas — de
+     onde saem exatamente sete arranjos possíveis, entre o mínimo de duas fotos
+     (<span class="id">RN-03</span>) e o máximo de oito (<span class="id">RN-04</span>).</p>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Fotos</th><th class="estreita">Páginas</th><th>Página 1</th><th>Página 2</th></tr></thead>
+    <tbody>
+      <tr><td><strong>2</strong></td><td>1</td><td>2 lado a lado, uma linha</td><td>—</td></tr>
+      <tr><td><strong>3</strong></td><td>1</td><td>2 na primeira linha + 1 na segunda</td><td>—</td></tr>
+      <tr><td><strong>4</strong></td><td>1</td><td>2 × 2</td><td>—</td></tr>
+      <tr><td><strong>5</strong></td><td>2</td><td>2 × 2</td><td>1</td></tr>
+      <tr><td><strong>6</strong></td><td>2</td><td>2 × 2</td><td>2 lado a lado</td></tr>
+      <tr><td><strong>7</strong></td><td>2</td><td>2 × 2</td><td>2 + 1</td></tr>
+      <tr><td><strong>8</strong></td><td>2</td><td>2 × 2</td><td>2 × 2</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>Regras da grade</h4>
+  <ul class="lista">
+    <li>Todas as fotos saem no mesmo tamanho, em <strong>4:3</strong>. Imagem de origem com
+        outra proporção é ajustada ao quadro sem distorcer.</li>
+    <li>A largura útil de 186 mm menos a calha de 6 mm dá <strong>90 mm por coluna</strong>
+        e, em 4:3, <strong>67,5 mm de altura</strong>.</li>
+    <li>Linha incompleta alinha as fotos à esquerda, mantendo a mesma largura de coluna —
+        a foto de uma linha ímpar não é esticada.</li>
+    <li>Uma foto <strong>nunca</strong> é partida entre páginas
+        (<span class="id">RF-45</span>).</li>
+    <li>A ordem segue <span class="id">RN-06</span>: F, P, L, T — ou T, P, F, L quando o
+        veículo é motocicleta.</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 12 ═══ -->
+<section id="s12">
+  <div class="eyebrow">Seção 12</div>
+  <h2>Arquitetura e distribuição</h2>
+
+  <p class="prosa">O núcleo Python do protótipo já está validado no que o domínio tem de
+     mais arriscado: leitura da planilha, montagem do caminho das imagens e desenho do
+     PDF. Ele permanece. O que muda é a casca: em vez de subir um servidor local e abrir
+     o navegador, a aplicação passa a abrir uma <strong>janela nativa</strong> com o
+     componente de web do próprio Windows, e é empacotada em um executável único.</p>
+
+  <div class="pilha">
+    <div class="camada camada-destaque">
+      <b>Janela nativa</b>
+      <span>pywebview sobre WebView2 — a mesma interface, sem barra de endereço e sem
+            depender do navegador do operador</span>
+    </div>
+    <div class="camada">
+      <b>Interface</b>
+      <span>HTML, CSS e JavaScript sem dependência externa, herdados do protótipo</span>
+    </div>
+    <div class="camada">
+      <b>Ponte</b>
+      <span>API local chamada pela interface: sessão, trânsitos, imagens, decisões,
+            laudos</span>
+    </div>
+    <div class="camada">
+      <b>Serviços</b>
+      <span>Sessão, carga do relatório, busca de imagens, seleção, geração de laudos,
+            remessa, auditoria</span>
+    </div>
+    <div class="camada">
+      <b>Domínio</b>
+      <span>Sessão, Trânsito, Imagem, Decisão, Laudo, Remessa — sem conhecer HTTP,
+            Excel ou PDF</span>
+    </div>
+    <div class="camada">
+      <b>Adaptadores</b>
+      <span>openpyxl (planilha), requests (imagens), reportlab (PDF), sistema de
+            arquivos (cache, rascunho, auditoria)</span>
+    </div>
+  </div>
+
+  <h3>Empacotamento</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th>Item</th><th>Decisão</th></tr></thead>
+    <tbody>
+      <tr><td>Alvo</td><td>Windows 10 e 11, 64 bits</td></tr>
+      <tr><td>Empacotador</td><td>PyInstaller em arquivo único</td></tr>
+      <tr><td>Entrega</td><td>Pasta copiável com o executável, a configuração e a logo ao
+          lado — sem instalador</td></tr>
+      <tr><td>Configuração</td><td>No código-fonte, num módulo de parâmetros. Ao lado do
+          executável fica apenas a <strong>logo</strong></td></tr>
+      <tr><td>Dados em disco</td><td>Cache de imagens e rascunho na pasta temporária, o
+          cache apagado ao encerrar; auditoria e remessas em pasta fixa</td></tr>
+      <tr><td>Atualização</td><td>Substituição do executável; a logo e as remessas ficam</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota nota-alerta">
+    <b>Dependência a verificar antes de fechar a arquitetura.</b> A janela nativa usa o
+    <em>WebView2 Runtime</em>, presente por padrão no Windows 11 e na maioria dos
+    Windows 10 atualizados — mas não em todos. A aplicação precisa detectar a ausência
+    na partida e, nesse caso, cair para o modo navegador do protótipo 1.0, avisando o
+    operador em vez de simplesmente não abrir. Convém confirmar a presença do runtime
+    nas máquinas da operação antes da Fase 1.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 13 ═══ -->
+<section id="s13">
+  <div class="eyebrow">Seção 13</div>
+  <h2>Riscos e pendências</h2>
+
+  <h3>Riscos em aberto</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Risco</th><th class="estreita">Impacto</th><th>Tratamento</th></tr></thead>
+    <tbody>
+      <tr><td class="id">R-02</td><td>WebView2 ausente na máquina do operador</td><td>alto</td>
+          <td>Detectar na partida e cair para o modo navegador, com aviso</td></tr>
+      <tr><td class="id">R-03</td><td>Antivírus corporativo bloqueia executável gerado por
+          PyInstaller</td><td>alto</td>
+          <td>Homologar o binário com a área de TI antes da entrega; avaliar assinatura
+              de código</td></tr>
+      <tr><td class="id">R-09</td><td>A exportação que o operador usa não traz
+          <code>Placa</code>, <code>Categoria</code> e <code>Vel.</code> — três dos nove
+          campos do laudo</td><td>alto</td>
+          <td>Definir a exportação correta (<span class="id">Q-10</span>);
+              <span class="id">RF-09</span> garante que a carga não quebra, mas o laudo
+              sairia com três campos vazios</td></tr>
+      <tr><td class="id">R-04</td><td>VPN instável durante a conferência</td><td>médio</td>
+          <td>Busca sob demanda, cache local e nova tentativa sem perder decisões</td></tr>
+      <tr><td class="id">R-06</td><td>Nomenclatura ou quantidade de ângulos difere entre
+          praças</td><td>médio</td>
+          <td>F/P/L/T confirmados; a lista fica no módulo de parâmetros, e o diagnóstico
+              de falha mostra qual arquivo não existe</td></tr>
+      <tr><td class="id">R-10</td><td>A remessa vai por e-mail e pode estourar o limite de
+          anexo do servidor</td><td>médio</td>
+          <td><span class="id">RF-50</span> compacta em ZIP; medir o peso médio de um laudo
+              de 8 fotos na Fase 3 e, se preciso, reduzir a resolução das imagens</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Riscos encerrados nesta revisão</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Risco</th><th>Como foi encerrado</th></tr></thead>
+    <tbody>
+      <tr><td class="id">R-01</td><td>Regra da pasta de imagens ambígua</td>
+          <td><strong>Resolvido por análise.</strong> A pasta é <code>ID[0:9]</code>. Medido
+              em 3.419 trânsitos de 5 praças — ver <a href="#s9">seção 09</a></td></tr>
+      <tr><td class="id">R-05</td><td>Texto de enquadramento incorreto ou indesejado</td>
+          <td><strong>Desapareceu.</strong> A PRF quer só a evidência; o bloco saiu do
+              laudo</td></tr>
+      <tr><td class="id">R-07</td><td>Volume real desconhecido</td>
+          <td><strong>Dimensionado.</strong> 100 trânsitos por dia em cada módulo</td></tr>
+      <tr><td class="id">R-08</td><td>Retenção de imagens sem política</td>
+          <td><strong>Definida.</strong> Cache apagado ao encerrar o executável
+              (<span class="id">RN-16</span>)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Premissas</h3>
+  <ul class="lista">
+    <li>O ID da transação mantém os 27 caracteres e a decomposição da
+        <a href="#s9">seção 09</a> — é a base de toda a busca de imagens.</li>
+    <li>O relatório mantém a coluna <code>ID Transação</code> como primeira do cabeçalho e
+        o bloco de metadados no topo.</li>
+    <li>O servidor de imagens continua acessível por HTTP dentro da rede, com o mesmo
+        padrão de caminho.</li>
+    <li>Cada operador trabalha em sua própria máquina, um relatório por vez.</li>
+    <li>O envio à PRF permanece manual, por e-mail, sob responsabilidade do coordenador.</li>
+  </ul>
+
+  <h3>Perguntas respondidas</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Pergunta</th><th>Resposta</th><th class="estreita">Efeito</th></tr></thead>
+    <tbody>
+      <tr><td class="id">Q-01</td><td>A PRF exige mínimo ou máximo de fotos?</td>
+          <td><strong>Não.</strong> Os limites são nossos: 2 no mínimo, 8 no máximo</td>
+          <td><span class="id">RN-03</span> <span class="id">RN-04</span></td></tr>
+      <tr><td class="id">Q-02</td><td>A PRF quer o dispositivo legal citado?</td>
+          <td><strong>Não — só a evidência</strong></td>
+          <td>Enquadramento removido do laudo</td></tr>
+      <tr><td class="id">Q-03</td><td>Falta algum campo que o Backoffice não exporta?</td>
+          <td><strong>Não</strong></td><td>Nove campos fixados</td></tr>
+      <tr><td class="id">Q-04</td><td>Quem assina o laudo?</td>
+          <td><strong>Ninguém — sem assinatura</strong></td>
+          <td>Bloco removido; entra a declaração de emissão</td></tr>
+      <tr><td class="id">Q-05</td><td>Como a remessa chega à PRF?</td>
+          <td><strong>Por e-mail</strong></td>
+          <td><span class="id">RF-50</span> sobe para importante</td></tr>
+      <tr><td class="id">Q-06</td><td>Existe prazo entre o trânsito e o envio?</td>
+          <td><strong>Não</strong></td><td>Sem alarme de prazo na aplicação</td></tr>
+      <tr><td class="id">Q-07</td><td>Qual a regra da pasta de imagens?</td>
+          <td><strong>Os 9 primeiros caracteres do ID.</strong> Medido, não perguntado</td>
+          <td><span class="id">RN-17</span> <span class="id">RF-11</span></td></tr>
+      <tr><td class="id">Q-08</td><td>Quantos trânsitos por dia?</td>
+          <td><strong>100 por dia em cada módulo</strong></td>
+          <td><span class="id">RNF-04</span></td></tr>
+      <tr><td class="id">Q-09</td><td>Por quanto tempo as imagens ficam em cache?</td>
+          <td><strong>Até o executável fechar</strong></td>
+          <td><span class="id">RN-16</span> <span class="id">RNF-08</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Pendência aberta</h3>
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">ID</th><th>Pergunta</th><th class="estreita">Com quem</th></tr></thead>
+    <tbody>
+      <tr><td class="id">Q-10</td><td>Qual exportação do Backoffice o operador vai usar? O
+          <em>TransactionSelectionReport</em> analisado não traz <code>Placa</code>,
+          <code>Categoria</code> nem <code>Vel.</code>, que são três dos nove campos do
+          laudo. Existe uma exportação que traga os três, ou eles saem vazios?</td>
+          <td>Operação</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 14 ═══ -->
+<section id="s14">
+  <div class="eyebrow">Seção 14</div>
+  <h2>Roteiro de entrega</h2>
+
+  <p class="prosa">Quatro fases, cada uma terminando em algo que o operador consegue usar.
+     As durações são estimativas para calibrar com a disponibilidade real — não um
+     compromisso de prazo.</p>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Fase</th><th>Entrega</th><th>Cobre</th><th class="estreita">Estimativa</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1 · Fundação</strong></td>
+          <td>Executável abrindo em janela nativa, com os dois módulos e a carga do
+              relatório</td>
+          <td><span class="id">RF-01</span> a <span class="id">RF-15</span>,
+              <span class="id">RNF-01</span> a <span class="id">RNF-05</span></td>
+          <td>~2 semanas</td></tr>
+      <tr><td><strong>2 · Conferência</strong></td>
+          <td>Tela de conferência refeita, com seleção de fotos e prévia embutida</td>
+          <td><span class="id">RF-16</span> a <span class="id">RF-36</span></td>
+          <td>~2 semanas</td></tr>
+      <tr><td><strong>3 · Laudo e remessa</strong></td>
+          <td>PDF A4 com grade 4:3 em até duas páginas, e a pasta de remessa</td>
+          <td><span class="id">RF-37</span> a <span class="id">RF-51</span></td>
+          <td>~1,5 semana</td></tr>
+      <tr><td><strong>4 · Endurecimento</strong></td>
+          <td>Parâmetros, diagnóstico, auditoria e homologação com os operadores</td>
+          <td><span class="id">RF-52</span> a <span class="id">RF-59</span>,
+              <span class="id">RNF-06</span> a <span class="id">RNF-16</span></td>
+          <td>~1 semana</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <b>Antes da Fase 1.</b> Três coisas precisam de resposta para não travar a entrega:
+    definir qual exportação do Backoffice traz placa, categoria e velocidade
+    (<span class="id">Q-10</span>), confirmar o WebView2 nas máquinas da operação
+    (<span class="id">R-02</span>) e homologar o executável com a área de TI
+    (<span class="id">R-03</span>). A logo definitiva da concessionária também precisa estar em
+    mãos até a Fase 3.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ 15 ═══ -->
+<section id="s15">
+  <div class="eyebrow">Seção 15</div>
+  <h2>Glossário</h2>
+
+  <div class="rolagem"><table>
+    <thead><tr><th class="estreita">Termo</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Free flow</strong></td><td>Pedágio de fluxo livre: o pórtico registra
+          a passagem sem cancela e sem parada do veículo.</td></tr>
+      <tr><td><strong>Trânsito</strong></td><td>Uma passagem de veículo pelo pórtico. É a
+          unidade de trabalho da conferência. Também chamado de transação.</td></tr>
+      <tr><td><strong>Backoffice</strong></td><td>Sistema que registra as transações e de
+          onde sai o relatório em Excel.</td></tr>
+      <tr><td><strong>Autuar</strong></td><td>Neste contexto, marcar o trânsito para
+          integrar a remessa à PRF. A autuação em si é ato da PRF.</td></tr>
+      <tr><td><strong>Laudo</strong></td><td>O PDF de um trânsito autuado, com os dados da
+          passagem e a evidência fotográfica.</td></tr>
+      <tr><td><strong>Remessa</strong></td><td>O conjunto de laudos de uma sessão, com
+          índice e resumo, pronto para envio.</td></tr>
+      <tr><td><strong>Ângulo</strong></td><td>A câmera que produziu a imagem:
+          <strong>F</strong> frontal, <strong>P</strong> panorâmica, <strong>L</strong>
+          lateral, <strong>T</strong> traseira.</td></tr>
+      <tr><td><strong>Panorâmica</strong></td><td>Ângulo aberto que enquadra a pista
+          inteira. É o que mostra em qual faixa o veículo estava.</td></tr>
+      <tr><td><strong>Tomada</strong></td><td>Cada imagem de um mesmo ângulo, numerada:
+          F01, F02, F03.</td></tr>
+      <tr><td><strong>Placa OCR</strong></td><td>Placa lida automaticamente pelo sistema de
+          reconhecimento, que pode divergir da placa registrada. Serve de alerta na tela;
+          não sai no laudo.</td></tr>
+      <tr><td><strong>Faixa</strong></td><td>A faixa de rolamento ocupada pelo veículo.
+          Não confundir com <em>pista</em>: uma pista tem várias faixas.</td></tr>
+      <tr><td><strong>Praça e pista</strong></td><td>Identificação do ponto de cobrança e da
+          faixa de rolamento; entram na montagem do caminho das imagens.</td></tr>
+      <tr><td><strong>Sem evidência</strong></td><td>Estado do trânsito cujas imagens não
+          puderam ser recuperadas. Não pode ser autuado.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer class="rodape">
+  Caderno de requisitos da versão 2.1 da Conferência de Autuações Free Flow.
+  Documento vivo: resta a <span class="id">Q-10</span> da seção 13, que precisa de resposta
+  antes do início da Fase 1. O protótipo navegável das telas T1 a T5 acompanha este
+  caderno.
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var alvos = [].slice.call(document.querySelectorAll('section[id]'));
+  var links = {};
+  [].forEach.call(document.querySelectorAll('#nav a'), function(a){
+    links[a.getAttribute('href').slice(1)] = a;
+  });
+  if (!('IntersectionObserver' in window)) return;
+  var obs = new IntersectionObserver(function(entradas){
+    entradas.forEach(function(e){
+      var a = links[e.target.id];
+      if (!a) return;
+      if (e.isIntersecting) {
+        for (var k in links) links[k].classList.remove('ativo');
+        a.classList.add('ativo');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  alvos.forEach(function(s){ obs.observe(s); });
+})();
+</script>
