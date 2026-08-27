@@ -131,7 +131,7 @@ def linha_analise(metadados: dict[str, str]) -> str:
     """
     RF-40 — a linha de origem do laudo.
 
-    "Criado por usuário 00598 em 25/08/2026 12:00:02 no nó BRN381 HOST"
+    "Criado por usuário 00598 em 25/08/2026 12:00:02 no nó XXX000 HOST"
                      vira
     "Analisado por usuário 00598 em 25/08/2026 12:00:02"
     """
