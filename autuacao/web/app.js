@@ -872,25 +872,48 @@ function decidir(desfecho, motivo, descricao) {
   }).catch(function (e) { avisar(e.message); });
 }
 
-/* Depois de decidir: o próximo pendente, mas sem sair do que está
-   filtrado. Se o filtro for de decididos, apenas segue para o próximo
-   item da lista — pular para um pendente escondido confundiria. */
+/* Sem evidência conta como não decidido: o trânsito não sumiu da lista de
+   trabalho, ainda precisa de um descarte com motivo. É o mesmo critério do
+   contador de pendentes no rodapé. */
+function naoDecidido(i) {
+  var e = E.estado.estados[i];
+  return e === 'pendente' || e === 'sem_evidencia';
+}
+
+/* Para onde ir depois de decidir. A busca anda para a frente e dá a volta,
+   então concluir o último cai no primeiro que ainda falta decidir — e não
+   no primeiro da lista, que em geral já estava resolvido. Não sobrando
+   nada para decidir, o que resta é gerar a remessa. */
 function proximoPendente() {
   var s = E.estado;
-  var vis = listaVisivel();
-  var procuraPendente = (E.filtro === 'todos' || E.filtro === 'pendente');
 
-  if (procuraPendente) {
+  if (E.filtro === 'todos' || E.filtro === 'pendente') {
     for (var d = 1; d <= s.total; d++) {
       var i = (E.indice + d) % s.total;
-      if (s.estados[i] === 'pendente' && combina(i)) {
-        irParaTransito(i); return;
+      if (naoDecidido(i) && combina(i)) { irParaTransito(i); return; }
+    }
+  } else {
+    /* navegando por decididos: segue na lista filtrada, sem tirar o
+       operador do lugar enquanto houver o que ver ali */
+    var adiante = vizinho(1);
+    if (adiante >= 0) { irParaTransito(adiante); return; }
+  }
+
+  /* nada dentro do filtro: o primeiro que falta decidir, onde quer que
+     esteja. O filtro é limpo junto, senão a tela mostraria um trânsito
+     que a própria lista diz não existir. */
+  for (var j = 0; j < s.total; j++) {
+    if (naoDecidido(j)) {
+      if (!combina(j)) {
+        E.filtro = 'todos';
+        E.busca = '';
+        if ($('#busca')) $('#busca').value = '';
       }
+      irParaTransito(j);
+      return;
     }
   }
-  var adiante = vizinho(1);
-  if (adiante >= 0) { irParaTransito(adiante); return; }
-  if (vis.length && vis[0] !== E.indice) { irParaTransito(vis[0]); return; }
+
   recarregarTransito(false).then(function () { mostrar('resumo'); });
 }
 
