@@ -590,9 +590,17 @@ function mudarFoto(passo) {
   desenharConferencia();
 }
 
+/* O id do trânsito faz parte da URL de propósito. Sem ele a URL era só
+   índice + código — a mesma para o primeiro trânsito de qualquer planilha
+   — e a resposta é marcada como imutável por 24 h: ao abrir outra planilha
+   sem fechar o programa, o navegador servia a foto guardada da anterior, de
+   outro veículo. O servidor confere o id contra o índice e recusa se
+   divergirem. */
 function urlImagem(codigo, largura) {
-  var u = '/api/imagem/' + E.indice + '/' + codigo;
-  return largura ? (u + '?w=' + largura) : u;
+  var t = E.transito;
+  var u = '/api/imagem/' + E.indice + '/' + codigo
+    + '?t=' + encodeURIComponent(t ? t.id : '');
+  return largura ? (u + '&w=' + largura) : u;
 }
 
 function desenharPalco() {

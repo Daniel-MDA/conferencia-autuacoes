@@ -220,7 +220,19 @@ def criar_app() -> Flask:
         rel = SESSAO.relatorio
         if rel is None or not 0 <= indice < len(rel.transitos):
             return "", 404
-        img = rel.transitos[indice].imagem(codigo)
+        t = rel.transitos[indice]
+
+        # O indice sozinho nao identifica foto nenhuma: /api/imagem/0/F01 e a
+        # mesma URL para o primeiro transito de QUALQUER planilha. Como a
+        # resposta vai marcada como imutavel, sem o id o navegador servia a
+        # foto guardada da planilha anterior — foto de outro veiculo, no
+        # documento que vai para a PRF. O id entra na URL para diferencia-la,
+        # e e conferido aqui: divergiu, recusa. Imagem quebrada o operador ve;
+        # imagem do carro errado passa despercebida.
+        if request.args.get("t") != t.id:
+            return "", 404
+
+        img = t.imagem(codigo)
         if img is None or not img.caminho_local:
             return "", 404
 
