@@ -39,6 +39,18 @@ def texto(v: Any) -> str:
     return str(v).strip()
 
 
+def numero(v: Any) -> str:
+    """
+    "03", "3", "3.0", "Praça 03" -> "3".
+
+    Praca e faixa aparecem escritas de varios jeitos na planilha; as tabelas
+    de PRACAS e FAIXAS sao indexadas pelo numero limpo.
+    """
+    s = texto(v)
+    achado = re.search(r"\d+", s)
+    return str(int(achado.group())) if achado else s
+
+
 # ══════════════════════════════════════════════════════════════ Imagem
 @dataclass
 class Imagem:
@@ -148,9 +160,62 @@ class Transito:
 
     @property
     def pista(self) -> str:
-        """A pista real vem do ID, nao da coluna (RN-17)."""
-        do_id = self.id[4:9]
-        return do_id if do_id else self.campo("pista")
+        """
+        A pista vem sempre da coluna Pista da planilha.
+
+        O ID carrega cinco caracteres nessa posicao e eles servem para achar
+        a pasta das imagens (ver pasta_servidor) — so para isso. Em 34% dos
+        transitos os dois valores discordam, e quem vale no documento e o
+        que o Backoffice escreveu na coluna.
+        """
+        return self.campo("pista")
+
+    # ────────────────────────────────────── onde foi, e para onde ia
+    @property
+    def praca_local(self) -> str:
+        """"Cidade Exemplo - KM 000,000" — onde a praca fica (RF-41b)."""
+        dados = P.PRACAS.get(numero(self.praca)) or {}
+        partes = [dados.get("cidade", "")]
+        if dados.get("km"):
+            partes.append(f"KM {dados['km']}")
+        return " - ".join(p for p in partes if p)
+
+    @property
+    def faixa(self) -> str:
+        """O numero da faixa como sai no documento: dois digitos."""
+        n = numero(self.campo("faixa"))
+        return n.zfill(2) if n.isdigit() else n
+
+    @property
+    def sentido(self) -> str:
+        """
+        Para onde o veiculo seguia.
+
+        RN-19 — a faixa tem um sentido proprio, mas em contramao o veiculo
+        anda no oposto dele, e e o oposto que precisa constar no documento:
+        e justamente andar contra o sentido da faixa que caracteriza a
+        infracao.
+        """
+        proprio = (P.FAIXAS.get(numero(self.campo("faixa"))) or {}).get("sentido", "")
+        if proprio and self.eh_contramao:
+            return P.SENTIDOS_OPOSTOS.get(proprio, proprio)
+        return proprio
+
+    @property
+    def faixa_sentido(self) -> str:
+        """
+        "01 - Acostamento - Norte - Decrescente - Exemplo B (contra-mão)"
+
+        Faixa, o que ela e, em que pista fica e para onde o veiculo seguia.
+        Faixa fora da tabela sai so com o numero — melhor do que inventar.
+        """
+        dados = P.FAIXAS.get(numero(self.campo("faixa"))) or {}
+        partes = [self.faixa, dados.get("descricao", ""),
+                  dados.get("pista", ""), self.sentido]
+        junto = " - ".join(p for p in partes if p)
+        if junto and self.eh_contramao:
+            junto += " (contra-mão)"
+        return junto
 
     @property
     def placa(self) -> str:
@@ -283,8 +348,11 @@ class Transito:
             "data": self.data,
             "hora": self.hora,
             "praca": self.praca,
+            "praca_local": self.praca_local,
             "pista": self.pista,
-            "faixa": self.campo("faixa"),
+            "faixa": self.faixa,
+            "faixa_sentido": self.faixa_sentido,
+            "sentido": self.sentido,
             "direcao": self.campo("direcao"),
             "placa": self.placa,
             "placa_ocr": self.placa_ocr,
@@ -359,8 +427,10 @@ class Relatorio:
 
     @property
     def pistas(self) -> list[str]:
+        # a pista vem da coluna e a coluna pode faltar (RF-09): sem o filtro
+        # o resumo da carga mostraria uma pista em branco na lista
         vistas: list[str] = []
         for t in self.transitos:
-            if t.pista not in vistas:
+            if t.pista and t.pista not in vistas:
                 vistas.append(t.pista)
         return sorted(vistas)

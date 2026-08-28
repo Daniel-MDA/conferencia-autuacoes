@@ -400,6 +400,8 @@ button,input,textarea,select{font-family:inherit; font-size:inherit; color:inher
   letter-spacing:.04em}
 .pv-campo b{font-weight:700; color:#111; font-size:7.5px; overflow:hidden;
   text-overflow:ellipsis; white-space:nowrap}
+/* o cinza depois do valor — cidade e KM da praça, como sai no PDF */
+.pv-campo b i{font-style:normal; font-weight:400; color:#555}
 .pv-fotos{display:grid; grid-template-columns:1fr 1fr; gap:4px}
 .pv-cel{display:flex; flex-direction:column; gap:1px; min-width:0}
 .pv-foto{aspect-ratio:4/3; background:#0c1013; border:1px solid #666; overflow:hidden}

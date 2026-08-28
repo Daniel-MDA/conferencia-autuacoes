@@ -7,9 +7,10 @@ Geracao do laudo — um PDF por transito autuado.
     Analisado por usuario 00598 em 25/08/2026 12:00:02
 
     DADOS
-    Data      Hora        ID
-    Rodovia   Praca       Pista
-    Placa     Categoria   Velocidade
+    Data      Hora            ID
+    Rodovia   Praca (cidade,  Faixa - Sentido - Direcao
+              KM)             (em contramao, o sentido sai invertido)
+    Placa     Categoria       Velocidade
 
     EVIDENCIA FOTOGRAFICA
     +------------------+  +------------------+
@@ -97,6 +98,8 @@ def _valor(chave: str, t: Transito) -> str:
         return _txt(t.praca)
     if chave == "pista":
         return _txt(t.pista)
+    if chave == "faixa_sentido":
+        return _txt(t.faixa_sentido)
     if chave == "placa":
         return _txt(t.placa)
     if chave == "categoria":
@@ -105,6 +108,19 @@ def _valor(chave: str, t: Transito) -> str:
         v = t.velocidade
         return f"{v} km/h" if v else "-"
     return "-"
+
+
+def _complemento(chave: str, t: Transito) -> str:
+    """
+    Texto secundario, em cinza, na mesma linha do valor.
+
+    A praca sai como "01 - Cidade Exemplo - KM 000,000": o numero em destaque,
+    e por ele que a PRF localiza o ponto, e a cidade e o quilometro logo
+    depois, para quem nao decora numero de praca.
+    """
+    if chave == "praca":
+        return t.praca_local
+    return ""
 
 
 def nome_arquivo(t: Transito, modulo: str) -> str:
@@ -173,26 +189,63 @@ def _rotulo_secao(c, y: float, texto: str) -> float:
     return y - 1.6 * mm
 
 
+def _ajustar(c, texto: str, fonte: str, largura: float,
+             corpo_max: float = 9, minimo: float = 6.0,
+             max_linhas: int = 2) -> tuple[float, list[str]]:
+    """
+    O maior corpo que faz o texto caber em ate max_linhas linhas.
+
+    Um campo so precisa das duas: faixa/sentido junta quatro informacoes
+    ("01 - Acostamento - Norte - Decrescente - Exemplo B"). Encolher ate
+    caber numa linha o deixaria ilegivel; quebrar preserva o corpo dos
+    outros oito campos, que continuam numa linha cada.
+    """
+    corpo = corpo_max
+    while corpo > minimo:
+        linhas = _quebrar(c, texto, fonte, corpo, largura, max_linhas)
+        if all(c.stringWidth(l, fonte, corpo) <= largura for l in linhas):
+            return corpo, linhas
+        corpo -= 0.25
+    return corpo, _quebrar(c, texto, fonte, corpo, largura, max_linhas)
+
+
 def _bloco_dados(c, t: Transito, y: float) -> float:
     """Nove campos em tres linhas de tres (RF-41). Devolve o Y final."""
     largura_col = LARGURA_UTIL / 3
+    util = largura_col - 4 * mm
     altura_linha = 7.6 * mm
+    entrelinha = 3.2 * mm
     y -= 4.4 * mm
 
     for i in range(0, len(P.CAMPOS_LAUDO), 3):
-        for j, (rotulo, chave) in enumerate(P.CAMPOS_LAUDO[i:i + 3]):
+        celulas = []
+        for rotulo, chave in P.CAMPOS_LAUDO[i:i + 3]:
+            corpo, linhas = _ajustar(c, _valor(chave, t), "Helvetica-Bold", util)
+            celulas.append((rotulo, corpo, linhas, _complemento(chave, t)))
+
+        for j, (rotulo, corpo, linhas, extra) in enumerate(celulas):
             x = MARGEM + j * largura_col
             c.setFont("Helvetica", 6.2)
             c.setFillColor(ROTULO)
             c.drawString(x, y, rotulo.upper())
 
-            valor = _valor(chave, t)
-            corpo = _encolher(c, valor, "Helvetica-Bold", 9,
-                              largura_col - 4 * mm)
-            c.setFont("Helvetica-Bold", corpo)
             c.setFillColor(TINTA)
-            c.drawString(x, y - 3.6 * mm, valor)
-        y -= altura_linha
+            for k, linha in enumerate(linhas):
+                c.setFont("Helvetica-Bold", corpo)
+                c.drawString(x, y - 3.6 * mm - k * entrelinha, linha)
+
+            if extra:
+                usado = c.stringWidth(linhas[-1], "Helvetica-Bold", corpo)
+                sobra = util - usado
+                texto = f" - {extra}"
+                cinza = _encolher(c, texto, "Helvetica", 6.2, sobra)
+                c.setFont("Helvetica", cinza)
+                c.setFillColor(ROTULO)
+                c.drawString(x + usado,
+                             y - 3.6 * mm - (len(linhas) - 1) * entrelinha, texto)
+
+        maior = max(len(cel[2]) for cel in celulas)
+        y -= altura_linha + (maior - 1) * entrelinha
 
     return y
 
@@ -279,8 +332,8 @@ def _rodape(c, pagina: int, total: int) -> None:
                         f"Página {pagina} de {total}")
 
 
-def _quebrar(c, texto: str, fonte: str, corpo: float,
-             largura: float) -> list[str]:
+def _quebrar(c, texto: str, fonte: str, corpo: float, largura: float,
+             max_linhas: int | None = None) -> list[str]:
     palavras = texto.split()
     linhas, atual = [], ""
     for p in palavras:
@@ -293,6 +346,11 @@ def _quebrar(c, texto: str, fonte: str, corpo: float,
             atual = p
     if atual:
         linhas.append(atual)
+
+    if max_linhas is not None and len(linhas) > max_linhas:
+        # o resto vai junto na ultima linha permitida: ela vai estourar a
+        # largura, e e assim que _ajustar percebe que precisa encolher mais
+        linhas = linhas[:max_linhas - 1] + [" ".join(linhas[max_linhas - 1:])]
     return linhas
 
 

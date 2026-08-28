@@ -796,10 +796,18 @@ a{color:var(--sinal-tinta)}
         <tr><td class="id">RN-17</td><td>A pasta das imagens no servidor são os
             <strong>9 primeiros caracteres do ID da transação</strong>. A coluna
             <code>Pista</code> do relatório <strong>não</strong> serve para montá-la —
-            ver <a href="#s9">seção 09</a>.</td></tr>
+            ver <a href="#s9">seção 09</a>. O inverso também vale: o campo
+            <strong>Pista do documento vem sempre da coluna</strong>, nunca do ID. Os
+            dois discordam em 34% dos trânsitos, e cada um responde a uma pergunta
+            diferente — onde estão as fotos, e o que o Backoffice registrou.</td></tr>
         <tr><td class="id">RN-18</td><td>Parâmetros da aplicação — servidor, ângulos,
             limites, textos, listas — vivem <strong>no código-fonte</strong>, num único
             módulo. Não há tela de configuração.</td></tr>
+        <tr><td class="id">RN-19</td><td>Cada faixa tem um <strong>sentido próprio</strong>
+            (tabela <code>FAIXAS</code>). Em <strong>contramão o sentido impresso é o
+            oposto</strong> do da faixa: é justamente seguir contra o sentido dela que
+            caracteriza a infração, e é o sentido real do veículo que a PRF precisa ler.
+            A pista não inverte — o veículo está nela, só andando ao contrário.</td></tr>
       </tbody>
     </table>
   </div>
@@ -1452,9 +1460,20 @@ a{color:var(--sinal-tinta)}
           <td><span class="tag tag-novo">alterado</span></td></tr>
       <tr><td>Dados</td><td>Nove campos em três linhas de três:<br>
           <strong>Data · Hora · ID</strong><br>
-          <strong>Rodovia · Praça · Pista</strong><br>
+          <strong>Rodovia · Praça · Faixa - Sentido - Direção</strong><br>
           <strong>Placa · Categoria · Velocidade</strong></td>
-          <td><span class="tag tag-novo">reduzido</span></td></tr>
+          <td><span class="tag tag-novo">alterado</span></td></tr>
+      <tr><td>Praça</td><td>O número em destaque, seguido em cinza da
+          <strong>cidade</strong> e do <strong>quilômetro</strong> em que a praça fica —
+          <em>01 - Cidade Exemplo - KM 000,000</em>. A tabela de praças está em
+          <code>PRACAS</code>. <span class="tag tag-novo">RF-41b</span></td>
+          <td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td>Faixa - Sentido - Direção</td><td>Substitui o antigo campo <em>Pista</em>.
+          Junta, nessa ordem, o <strong>número da faixa</strong>, o que ela é, em que
+          <strong>pista</strong> fica e para onde o veículo <strong>seguia</strong> —
+          <em>01 - Acostamento - Norte - Decrescente - Exemplo B (contra-mão)</em>.
+          A tabela de faixas está em <code>FAIXAS</code>; faixa fora dela sai só com o
+          número.</td><td><span class="tag tag-novo">novo</span></td></tr>
       <tr><td>Fotos</td><td>Sempre em <strong>4:3</strong>, duas colunas, no máximo 4 por
           página e no máximo 2 páginas. Coluna de 90 mm, altura de 67,5 mm.</td>
           <td><span class="tag tag-novo">refeito</span></td></tr>

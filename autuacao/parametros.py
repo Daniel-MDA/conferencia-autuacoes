@@ -104,9 +104,47 @@ DECLARACAO_RODAPE = (
 #: RF-41 — nove campos, tres linhas de tres.
 CAMPOS_LAUDO = [
     ("Data", "data"), ("Hora", "hora"), ("ID", "id"),
-    ("Rodovia", "rodovia"), ("Praça", "praca"), ("Pista", "pista"),
+    ("Rodovia", "rodovia"), ("Praça", "praca"),
+    ("Faixa - Sentido - Direção", "faixa_sentido"),
     ("Placa", "placa"), ("Categoria", "categoria"), ("Velocidade", "velocidade"),
 ]
+
+
+# ══════════════════════════════════════════════ pracas e faixas (RF-41b)
+# As duas tabelas abaixo descrevem a rodovia: onde cada praca fica e para
+# onde cada faixa aponta. A PRF precisa das duas no documento — o
+# quilometro situa a praca e o sentido diz de que lado o veiculo seguia.
+#
+# Os valores aqui sao de exemplo. A implantacao real substitui os tres
+# blocos em autuacao/parametros_local.py, que nao vai para o repositorio.
+
+#: Numero da praca (sem zeros a esquerda) -> cidade e quilometro.
+PRACAS = {
+    "1": {"cidade": "Cidade Exemplo", "km": "000,000"},
+    "2": {"cidade": "Outra Cidade", "km": "000,000"},
+}
+
+#: Numero da faixa -> o que ela e, em que pista fica e para onde aponta.
+#: A ordem das chaves nao importa; a faixa vem da coluna Faixa da planilha.
+FAIXAS = {
+    "1": {"descricao": "Acostamento", "pista": "Norte",
+          "sentido": "Crescente - Exemplo A"},
+    "2": {"descricao": "Tráfego", "pista": "Norte",
+          "sentido": "Crescente - Exemplo A"},
+    "3": {"descricao": "Tráfego", "pista": "Sul",
+          "sentido": "Decrescente - Exemplo B"},
+    "4": {"descricao": "Acostamento", "pista": "Sul",
+          "sentido": "Decrescente - Exemplo B"},
+}
+
+#: RN-19 — os dois sentidos da rodovia, cada um apontando para o oposto.
+#: Em contramao o veiculo segue no sentido contrario ao da faixa, e e o
+#: contrario que precisa constar no documento. Uma pista so tem dois
+#: sentidos, entao inverter e trocar um pelo outro.
+SENTIDOS_OPOSTOS = {
+    "Crescente - Exemplo A": "Decrescente - Exemplo B",
+    "Decrescente - Exemplo B": "Crescente - Exemplo A",
+}
 
 #: proporcao fixa das fotos no laudo e na tela (RF-18, RF-42)
 PROPORCAO_FOTO = (4, 3)

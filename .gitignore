@@ -17,6 +17,13 @@ docs/*.pptx
 # valores reais de producao (servidor, razao social) — nao publicar
 autuacao/parametros_local.py
 
+# planilhas: as deste projeto carregam transitos reais (placas, IDs) —
+# nenhuma vai para o repositorio, nem os temporarios ~$ do Excel
+*.xlsx
+*.xls
+*.csv
+~$*
+
 # runtime
 ConferenciaAutuacoes.log
 autuacao_rascunho.json
