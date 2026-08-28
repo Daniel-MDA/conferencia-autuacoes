@@ -170,12 +170,21 @@ class Transito:
         """
         return self.campo("pista")
 
+    @property
+    def data_e_hora(self) -> str:
+        """"01/08/2026 08:10:30" — as duas numa celula so do laudo."""
+        return f"{self.data} {self.hora}".strip()
+
     # ────────────────────────────────────── onde foi, e para onde ia
     @property
-    def praca_local(self) -> str:
-        """"Cidade Exemplo - KM 000,000" — onde a praca fica (RF-41b)."""
+    def _faixa_tabela(self) -> dict:
+        return P.FAIXAS.get(numero(self.campo("faixa"))) or {}
+
+    @property
+    def praca_completa(self) -> str:
+        """"01 - Cidade Exemplo - KM 000,000" — a praca e onde fica (RF-41b)."""
         dados = P.PRACAS.get(numero(self.praca)) or {}
-        partes = [dados.get("cidade", "")]
+        partes = [self.praca, dados.get("cidade", "")]
         if dados.get("km"):
             partes.append(f"KM {dados['km']}")
         return " - ".join(p for p in partes if p)
@@ -187,32 +196,40 @@ class Transito:
         return n.zfill(2) if n.isdigit() else n
 
     @property
-    def sentido(self) -> str:
-        """
-        Para onde o veiculo seguia.
+    def faixa_descrita(self) -> str:
+        """"03 - Tráfego" — o numero da faixa e o que ela e."""
+        return " - ".join(p for p in (self.faixa,
+                                      self._faixa_tabela.get("descricao", "")) if p)
 
-        RN-19 — a faixa tem um sentido proprio, mas em contramao o veiculo
-        anda no oposto dele, e e o oposto que precisa constar no documento:
-        e justamente andar contra o sentido da faixa que caracteriza a
-        infracao.
-        """
-        proprio = (P.FAIXAS.get(numero(self.campo("faixa"))) or {}).get("sentido", "")
+    # RN-19 — pista e sentido abaixo respondem "para onde o veiculo ia",
+    # nao "como a faixa e". Em contramao ele ia para o lado contrario, e
+    # os dois saem invertidos: a celula descreve o deslocamento.
+    @property
+    def pista_deslocamento(self) -> str:
+        propria = self._faixa_tabela.get("pista", "")
+        if propria and self.eh_contramao:
+            return P.PISTAS_OPOSTAS.get(propria, propria)
+        return propria
+
+    @property
+    def sentido(self) -> str:
+        proprio = self._faixa_tabela.get("sentido", "")
         if proprio and self.eh_contramao:
             return P.SENTIDOS_OPOSTOS.get(proprio, proprio)
         return proprio
 
     @property
-    def faixa_sentido(self) -> str:
+    def deslocamento(self) -> str:
         """
-        "01 - Acostamento - Norte - Decrescente - Exemplo B (contra-mão)"
+        "Norte - Crescente (Exemplo A) (contra-mão)"
 
-        Faixa, o que ela e, em que pista fica e para onde o veiculo seguia.
-        Faixa fora da tabela sai so com o numero — melhor do que inventar.
+        O marcador fica porque o titulo do documento nao basta: no modulo
+        de acostamento um veiculo tambem pode estar em contramao, e sem
+        ele a celula invertida sairia identica a de um veiculo regular
+        numa faixa do outro lado. Faixa fora da tabela sai vazia — melhor
+        do que inventar um sentido.
         """
-        dados = P.FAIXAS.get(numero(self.campo("faixa"))) or {}
-        partes = [self.faixa, dados.get("descricao", ""),
-                  dados.get("pista", ""), self.sentido]
-        junto = " - ".join(p for p in partes if p)
+        junto = " - ".join(p for p in (self.pista_deslocamento, self.sentido) if p)
         if junto and self.eh_contramao:
             junto += " (contra-mão)"
         return junto
@@ -348,11 +365,11 @@ class Transito:
             "data": self.data,
             "hora": self.hora,
             "praca": self.praca,
-            "praca_local": self.praca_local,
+            "praca_completa": self.praca_completa,
             "pista": self.pista,
             "faixa": self.faixa,
-            "faixa_sentido": self.faixa_sentido,
-            "sentido": self.sentido,
+            "faixa_descrita": self.faixa_descrita,
+            "deslocamento": self.deslocamento,
             "direcao": self.campo("direcao"),
             "placa": self.placa,
             "placa_ocr": self.placa_ocr,

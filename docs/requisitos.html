@@ -803,11 +803,15 @@ a{color:var(--sinal-tinta)}
         <tr><td class="id">RN-18</td><td>Parâmetros da aplicação — servidor, ângulos,
             limites, textos, listas — vivem <strong>no código-fonte</strong>, num único
             módulo. Não há tela de configuração.</td></tr>
-        <tr><td class="id">RN-19</td><td>Cada faixa tem um <strong>sentido próprio</strong>
-            (tabela <code>FAIXAS</code>). Em <strong>contramão o sentido impresso é o
-            oposto</strong> do da faixa: é justamente seguir contra o sentido dela que
-            caracteriza a infração, e é o sentido real do veículo que a PRF precisa ler.
-            A pista não inverte — o veículo está nela, só andando ao contrário.</td></tr>
+        <tr><td class="id">RN-19</td><td>O campo <strong>Sentido do deslocamento</strong>
+            descreve <strong>para onde o veículo ia</strong>, não como a faixa é. Em
+            contramão ele ia para o lado contrário, então <strong>pista e sentido saem
+            os dois invertidos</strong> (tabelas <code>PISTAS_OPOSTAS</code> e
+            <code>SENTIDOS_OPOSTOS</code>), e o campo recebe o marcador
+            <em>(contra-mão)</em>. O marcador é necessário: sem ele, um veículo em
+            contramão na faixa 3 imprimiria a mesma célula que um veículo regular na
+            faixa 2 — e no módulo de acostamento, onde o título do documento não diz
+            contramão, nada indicaria a inversão.</td></tr>
       </tbody>
     </table>
   </div>
@@ -1459,21 +1463,25 @@ a{color:var(--sinal-tinta)}
           O trecho <em>no nó XXX000 HOST</em> não é impresso.</td>
           <td><span class="tag tag-novo">alterado</span></td></tr>
       <tr><td>Dados</td><td>Nove campos em três linhas de três:<br>
-          <strong>Data · Hora · ID</strong><br>
-          <strong>Rodovia · Praça · Faixa - Sentido - Direção</strong><br>
+          <strong>Data e hora · ID · Rodovia</strong><br>
+          <strong>Praça · Faixa · Sentido do deslocamento</strong><br>
           <strong>Placa · Categoria · Velocidade</strong></td>
           <td><span class="tag tag-novo">alterado</span></td></tr>
-      <tr><td>Praça</td><td>O número em destaque, seguido em cinza da
-          <strong>cidade</strong> e do <strong>quilômetro</strong> em que a praça fica —
-          <em>01 - Cidade Exemplo - KM 000,000</em>. A tabela de praças está em
-          <code>PRACAS</code>. <span class="tag tag-novo">RF-41b</span></td>
+      <tr><td>Praça</td><td>Número, <strong>cidade</strong> e <strong>quilômetro</strong>
+          da praça, tudo no mesmo corpo — <em>01 - Cidade Exemplo - KM 000,000</em>.
+          A tabela está em <code>PRACAS</code>.
+          <span class="tag tag-novo">RF-41b</span></td>
           <td><span class="tag tag-novo">novo</span></td></tr>
-      <tr><td>Faixa - Sentido - Direção</td><td>Substitui o antigo campo <em>Pista</em>.
-          Junta, nessa ordem, o <strong>número da faixa</strong>, o que ela é, em que
-          <strong>pista</strong> fica e para onde o veículo <strong>seguia</strong> —
-          <em>01 - Acostamento - Norte - Decrescente - Exemplo B (contra-mão)</em>.
-          A tabela de faixas está em <code>FAIXAS</code>; faixa fora dela sai só com o
-          número.</td><td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td>Faixa</td><td>O <strong>número da faixa</strong> e o que ela é —
+          <em>03 - Tráfego</em>. A tabela está em <code>FAIXAS</code>; faixa fora dela
+          sai só com o número.</td>
+          <td><span class="tag tag-novo">novo</span></td></tr>
+      <tr><td>Sentido do deslocamento</td><td>Substitui o antigo campo <em>Pista</em>.
+          <strong>Pista e sentido para onde o veículo ia</strong> —
+          <em>Norte - Crescente (Exemplo A)</em>. Em contramão os dois saem invertidos
+          e o campo ganha o marcador <em>(contra-mão)</em>
+          (<span class="id">RN-19</span>).</td>
+          <td><span class="tag tag-novo">novo</span></td></tr>
       <tr><td>Fotos</td><td>Sempre em <strong>4:3</strong>, duas colunas, no máximo 4 por
           página e no máximo 2 páginas. Coluna de 90 mm, altura de 67,5 mm.</td>
           <td><span class="tag tag-novo">refeito</span></td></tr>

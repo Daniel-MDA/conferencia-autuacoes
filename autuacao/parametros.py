@@ -103,9 +103,9 @@ DECLARACAO_RODAPE = (
 
 #: RF-41 — nove campos, tres linhas de tres.
 CAMPOS_LAUDO = [
-    ("Data", "data"), ("Hora", "hora"), ("ID", "id"),
-    ("Rodovia", "rodovia"), ("Praça", "praca"),
-    ("Faixa - Sentido - Direção", "faixa_sentido"),
+    ("Data e hora", "data_e_hora"), ("ID", "id"), ("Rodovia", "rodovia"),
+    ("Praça", "praca_completa"), ("Faixa", "faixa_descrita"),
+    ("Sentido do deslocamento", "deslocamento"),
     ("Placa", "placa"), ("Categoria", "categoria"), ("Velocidade", "velocidade"),
 ]
 
@@ -128,22 +128,31 @@ PRACAS = {
 #: A ordem das chaves nao importa; a faixa vem da coluna Faixa da planilha.
 FAIXAS = {
     "1": {"descricao": "Acostamento", "pista": "Norte",
-          "sentido": "Crescente - Exemplo A"},
+          "sentido": "Crescente (Exemplo A)"},
     "2": {"descricao": "Tráfego", "pista": "Norte",
-          "sentido": "Crescente - Exemplo A"},
+          "sentido": "Crescente (Exemplo A)"},
     "3": {"descricao": "Tráfego", "pista": "Sul",
-          "sentido": "Decrescente - Exemplo B"},
+          "sentido": "Decrescente (Exemplo B)"},
     "4": {"descricao": "Acostamento", "pista": "Sul",
-          "sentido": "Decrescente - Exemplo B"},
+          "sentido": "Decrescente (Exemplo B)"},
 }
 
-#: RN-19 — os dois sentidos da rodovia, cada um apontando para o oposto.
-#: Em contramao o veiculo segue no sentido contrario ao da faixa, e e o
-#: contrario que precisa constar no documento. Uma pista so tem dois
-#: sentidos, entao inverter e trocar um pelo outro.
+# RN-19 — o campo do laudo e o *sentido do deslocamento*: descreve para
+# onde o veiculo ia, nao onde a faixa aponta. Em contramao ele ia para o
+# lado contrario, entao pista e sentido saem os dois invertidos. Uma
+# rodovia de pista dupla so tem dois de cada, entao inverter e trocar um
+# pelo outro.
+
+#: os dois sentidos, cada um apontando para o seu oposto
 SENTIDOS_OPOSTOS = {
-    "Crescente - Exemplo A": "Decrescente - Exemplo B",
-    "Decrescente - Exemplo B": "Crescente - Exemplo A",
+    "Crescente (Exemplo A)": "Decrescente (Exemplo B)",
+    "Decrescente (Exemplo B)": "Crescente (Exemplo A)",
+}
+
+#: as duas pistas, idem
+PISTAS_OPOSTAS = {
+    "Norte": "Sul",
+    "Sul": "Norte",
 }
 
 #: proporcao fixa das fotos no laudo e na tela (RF-18, RF-42)

@@ -490,14 +490,14 @@ function desenharDados() {
       { r: 'Velocidade', v: t.velocidade ? t.velocidade + ' km/h' : '' }
     ]],
     ['Onde', [
-      { r: 'Praça', v: t.praca + (t.praca_local ? ' · ' + t.praca_local : ''),
-        larga: true },
+      { r: 'Praça', v: t.praca_completa || t.praca, larga: true },
       { r: 'Pista', v: t.pista },
-      { r: 'Faixa', v: t.faixa, forte: true },
+      { r: 'Faixa', v: t.faixa_descrita || t.faixa, forte: true },
       { r: 'Direção', v: t.direcao, forte: t.eh_contramao },
-      /* em contramão este é o sentido invertido (RN-19) — destacado porque
-         é o que vai no documento e o que vale a pena conferir na foto */
-      { r: 'Sentido', v: t.sentido, forte: t.eh_contramao, larga: true }
+      /* em contramão pista e sentido saem invertidos (RN-19) — destacado
+         porque é o que vai no documento e o que conferir na foto */
+      { r: 'Sentido do deslocamento', v: t.deslocamento,
+        forte: t.eh_contramao, larga: true }
     ]],
     ['Quando', [
       { r: 'Data', v: t.data },
@@ -728,20 +728,19 @@ function desenharPrevia() {
 
   var valores = {
     data: t.data, hora: t.hora, id: t.id,
+    data_e_hora: (t.data + ' ' + t.hora).trim(),
     rodovia: CFG.rodovia, praca: t.praca, pista: t.pista,
-    faixa_sentido: t.faixa_sentido,
+    praca_completa: t.praca_completa,
+    faixa_descrita: t.faixa_descrita,
+    deslocamento: t.deslocamento,
     placa: t.placa, categoria: t.categoria,
     velocidade: t.velocidade ? t.velocidade + ' km/h' : ''
   };
-  /* o cinza depois do valor, igual ao do PDF: cidade e KM da praça */
-  var extras = { praca: t.praca_local };
   var blocoDados = '<div class="pv-rot">Dados</div><div class="pv-dados">'
     + CFG.campos_laudo.map(function (c) {
       var v = valores[c[1]] || '-';
-      var x = extras[c[1]] || '';
-      return '<div class="pv-campo" title="' + esc(v + (x ? ' - ' + x : ''))
-        + '"><em>' + esc(c[0]) + '</em><b>' + esc(v)
-        + (x ? '<i> - ' + esc(x) + '</i>' : '') + '</b></div>';
+      return '<div class="pv-campo" title="' + esc(v) + '"><em>' + esc(c[0])
+        + '</em><b>' + esc(v) + '</b></div>';
     }).join('') + '</div>';
 
   var porCodigo = {};

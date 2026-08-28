@@ -7,10 +7,10 @@ Geracao do laudo — um PDF por transito autuado.
     Analisado por usuario 00598 em 25/08/2026 12:00:02
 
     DADOS
-    Data      Hora            ID
-    Rodovia   Praca (cidade,  Faixa - Sentido - Direcao
-              KM)             (em contramao, o sentido sai invertido)
-    Placa     Categoria       Velocidade
+    Data e hora        ID           Rodovia
+    Praca - cidade -   Faixa - o    Sentido do deslocamento: pista e
+    KM                 que ela e    sentido, invertidos se contramao
+    Placa              Categoria    Velocidade
 
     EVIDENCIA FOTOGRAFICA
     +------------------+  +------------------+
@@ -94,12 +94,18 @@ def _valor(chave: str, t: Transito) -> str:
         return t.id
     if chave == "rodovia":
         return _txt(P.RODOVIA)
+    if chave == "data_e_hora":
+        return _txt(t.data_e_hora)
     if chave == "praca":
         return _txt(t.praca)
+    if chave == "praca_completa":
+        return _txt(t.praca_completa)
     if chave == "pista":
         return _txt(t.pista)
-    if chave == "faixa_sentido":
-        return _txt(t.faixa_sentido)
+    if chave == "faixa_descrita":
+        return _txt(t.faixa_descrita)
+    if chave == "deslocamento":
+        return _txt(t.deslocamento)
     if chave == "placa":
         return _txt(t.placa)
     if chave == "categoria":
@@ -108,19 +114,6 @@ def _valor(chave: str, t: Transito) -> str:
         v = t.velocidade
         return f"{v} km/h" if v else "-"
     return "-"
-
-
-def _complemento(chave: str, t: Transito) -> str:
-    """
-    Texto secundario, em cinza, na mesma linha do valor.
-
-    A praca sai como "01 - Cidade Exemplo - KM 000,000": o numero em destaque,
-    e por ele que a PRF localiza o ponto, e a cidade e o quilometro logo
-    depois, para quem nao decora numero de praca.
-    """
-    if chave == "praca":
-        return t.praca_local
-    return ""
 
 
 def nome_arquivo(t: Transito, modulo: str) -> str:
@@ -221,28 +214,18 @@ def _bloco_dados(c, t: Transito, y: float) -> float:
         celulas = []
         for rotulo, chave in P.CAMPOS_LAUDO[i:i + 3]:
             corpo, linhas = _ajustar(c, _valor(chave, t), "Helvetica-Bold", util)
-            celulas.append((rotulo, corpo, linhas, _complemento(chave, t)))
+            celulas.append((rotulo, corpo, linhas))
 
-        for j, (rotulo, corpo, linhas, extra) in enumerate(celulas):
+        for j, (rotulo, corpo, linhas) in enumerate(celulas):
             x = MARGEM + j * largura_col
             c.setFont("Helvetica", 6.2)
             c.setFillColor(ROTULO)
             c.drawString(x, y, rotulo.upper())
 
+            c.setFont("Helvetica-Bold", corpo)
             c.setFillColor(TINTA)
             for k, linha in enumerate(linhas):
-                c.setFont("Helvetica-Bold", corpo)
                 c.drawString(x, y - 3.6 * mm - k * entrelinha, linha)
-
-            if extra:
-                usado = c.stringWidth(linhas[-1], "Helvetica-Bold", corpo)
-                sobra = util - usado
-                texto = f" - {extra}"
-                cinza = _encolher(c, texto, "Helvetica", 6.2, sobra)
-                c.setFont("Helvetica", cinza)
-                c.setFillColor(ROTULO)
-                c.drawString(x + usado,
-                             y - 3.6 * mm - (len(linhas) - 1) * entrelinha, texto)
 
         maior = max(len(cel[2]) for cel in celulas)
         y -= altura_linha + (maior - 1) * entrelinha
